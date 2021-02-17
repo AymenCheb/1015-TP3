@@ -4,7 +4,7 @@
 #pragma region "Includes"//{
 #define _CRT_SECURE_NO_WARNINGS // On permet d'utiliser les fonctions de copies de chaînes qui sont considérées non sécuritaires.
 
-#include "structures_solutionnaire_td2_3.hpp"      // Structures de données pour la collection de films en mémoire.
+#include "structures.hpp"      // Structures de données pour la collection de films en mémoire.
 
 #include "bibliotheque_cours.hpp"
 #include "verification_allocation.hpp" // Nos fonctions pour le rapport de fuites de mémoire.
@@ -17,6 +17,7 @@
 #include "cppitertools/range.hpp"
 #include "gsl/span"
 #include "debogage_memoire.hpp"        // Ajout des numéros de ligne des "new" dans le rapport de fuites.  Doit être après les include du système, qui peuvent utiliser des "placement new" (non supporté par notre ajout de numéros de lignes).
+#include <memory>
 using namespace std;
 using namespace iter;
 using namespace gsl;
@@ -25,7 +26,6 @@ using namespace gsl;
 
 typedef uint8_t UInt8;
 typedef uint16_t UInt16;
-//test github
 #pragma region "Fonctions de base pour lire le fichier binaire"//{
 
 UInt8 lireUint8(istream& fichier)
