@@ -25,7 +25,7 @@ using namespace gsl;
 
 typedef uint8_t UInt8;
 typedef uint16_t UInt16;
-
+//test github
 #pragma region "Fonctions de base pour lire le fichier binaire"//{
 
 UInt8 lireUint8(istream& fichier)
