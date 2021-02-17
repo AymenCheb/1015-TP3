@@ -28,7 +28,7 @@ private:
 
 struct ListeActeurs {
 	int capacite, nElements;
-	Acteur** elements; // Pointeur vers un tableau de Acteur*, chaque Acteur* pointant vers un Acteur.
+	unique_ptr<Acteur* []> elements; // Pointeur vers un tableau de Acteur*, chaque Acteur* pointant vers un Acteur.
 };
 
 struct Film

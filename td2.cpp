@@ -96,7 +96,7 @@ void ListeFilms::enleverFilm(const Film* film)
 // Fonction pour trouver un Acteur par son nom dans une ListeFilms, qui retourne un pointeur vers l'acteur, ou nullptr si l'acteur n'est pas trouvé.  Devrait utiliser span.
 //[
 // Voir la NOTE ci-dessous pourquoi Acteur* n'est pas const.  Noter que c'est valide puisque c'est la struct uniquement qui est const dans le paramètre, et non ce qui est pointé par la struct.
-span<Acteur*> spanListeActeurs(const ListeActeurs& liste) { return span(liste.elements, liste.nElements); }
+span<Acteur*> spanListeActeurs(const ListeActeurs& liste) { return span(liste.elements.get(), liste.nElements); }
 
 //NOTE: Doit retourner un Acteur modifiable, sinon on ne peut pas l'utiliser pour modifier l'acteur tel que demandé dans le main, et on ne veut pas faire écrire deux versions aux étudiants dans le TD2.
 Acteur* ListeFilms::trouverActeur(const string& nomActeur) const
@@ -140,7 +140,7 @@ Film* lireFilm(istream& fichier, ListeFilms& listeFilms)
 
 	Film* filmp = new Film(film); //NOTE: On aurait normalement fait le "new" au début de la fonction pour directement mettre les informations au bon endroit; on le fait ici pour que le code ci-dessus puisse être directement donné aux étudiants dans le TD2 sans qu'ils aient le "new" déjà écrit.  On aurait alors aussi un nom "film" pour le pointeur, pour suivre le guide de codage; on a mis un suffixe "p", contre le guide de codage, pour le différencier de "film".
 	cout << "Création Film " << film.titre << endl;
-	filmp->acteurs.elements = new Acteur*[filmp->acteurs.nElements];
+	filmp->acteurs.elements = make_unique< Acteur*[]>(filmp->acteurs.nElements); // [filmp->acteurs.nElements]
 	for (Acteur*& acteur : spanListeActeurs(filmp->acteurs)) {
 		acteur = lireActeur(fichier, listeFilms);
 		acteur->joueDans.ajouterFilm(filmp);
