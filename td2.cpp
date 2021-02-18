@@ -112,19 +112,8 @@ Acteur* ListeFilms::trouverActeur(const string& nomActeur) const
 //]
 
 // Les fonctions pour lire le fichier et créer/allouer une ListeFilms.
-ListeActeurs::ListeActeurs() {
-	this->capacite = 1;
-	this->nElements = 0;
-	this->elements = make_unique< Acteur* []>(1);
-}
-ListeActeurs::ListeActeurs(int nombreElements) {
-	this->capacite = nombreElements;
-	this->nElements = nombreElements;
-	this->elements = make_unique< Acteur* []>(nombreElements);
-}
-Film::Film(int nombreActeurs) {
-	this->acteurs = ListeActeurs(nombreActeurs);
-}
+
+
 Acteur* lireActeur(istream& fichier, ListeFilms& listeFilms)
 {
 	Acteur acteur = {};

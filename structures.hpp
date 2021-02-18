@@ -33,6 +33,19 @@ struct ListeActeurs {
 	std::unique_ptr<Acteur* []> elements; // Pointeur vers un tableau de Acteur*, chaque Acteur* pointant vers un Acteur.
 };
 
+ListeActeurs::ListeActeurs() {
+	this->capacite = 1;
+	this->nElements = 0;
+	this->elements = make_unique< Acteur* []>(1);
+}
+ListeActeurs::ListeActeurs(int nombreElements) {
+	this->capacite = nombreElements;
+	this->nElements = nombreElements;
+	this->elements = make_unique< Acteur* []>(nombreElements);
+}
+Film::Film(int nombreActeurs) {
+	this->acteurs = ListeActeurs(nombreActeurs);
+}
 struct Film
 {
 	Film(int nombreActeurs);
