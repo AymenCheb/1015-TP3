@@ -30,7 +30,7 @@ struct ListeActeurs {
 	ListeActeurs();
 	ListeActeurs(int nElements);
 	int capacite, nElements;
-	std::unique_ptr<Acteur* []> elements; // Pointeur vers un tableau de Acteur*, chaque Acteur* pointant vers un Acteur.
+	std::unique_ptr<std::shared_ptr<Acteur> []> elements; // Pointeur vers un tableau de Acteur*, chaque Acteur* pointant vers un Acteur.
 };
 
 ListeActeurs::ListeActeurs() {
@@ -57,5 +57,5 @@ Film::Film(int nombreActeurs) {
 struct Acteur
 {
 	std::string nom; int anneeNaissance; char sexe;
-	ListeFilms joueDans;
+	//ListeFilms joueDans;
 };

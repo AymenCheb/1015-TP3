@@ -239,14 +239,14 @@ void afficherListeFilms(const ListeFilms& listeFilms)
 	}
 }
 
-void afficherFilmographieActeur(const ListeFilms& listeFilms, const string& nomActeur)
-{
-	const Acteur* acteur = listeFilms.trouverActeur(nomActeur);
-	if (acteur == nullptr)
-		cout << "Aucun acteur de ce nom" << endl;
-	else
-		afficherListeFilms(acteur->joueDans);
-}
+//void afficherFilmographieActeur(const ListeFilms& listeFilms, const string& nomActeur)
+//{
+//	const Acteur* acteur = listeFilms.trouverActeur(nomActeur);
+//	if (acteur == nullptr)
+//		cout << "Aucun acteur de ce nom" << endl;
+//	else
+//		afficherListeFilms(acteur->joueDans);
+//}
 
 int main()
 {
@@ -271,7 +271,7 @@ int main()
 
 	cout << ligneDeSeparation << "Liste des films où Benedict Cumberbatch joue sont:" << endl;
 	// Affiche la liste des films où Benedict Cumberbatch joue.  Il devrait y avoir Le Hobbit et Le jeu de l'imitation.
-	afficherFilmographieActeur(listeFilms, "Benedict Cumberbatch");
+	//afficherFilmographieActeur(listeFilms, "Benedict Cumberbatch");
 	
 	// Détruit et enlève le premier film de la liste (Alien).
 	detruireFilm(listeFilms.enSpan()[0]);
@@ -282,7 +282,7 @@ int main()
 
 	// Pour une couverture avec 0% de lignes non exécutées:
 	listeFilms.enleverFilm(nullptr); // Enlever un film qui n'est pas dans la liste (clairement que nullptr n'y est pas).
-	afficherFilmographieActeur(listeFilms, "N'existe pas"); // Afficher les films d'un acteur qui n'existe pas.
+	//afficherFilmographieActeur(listeFilms, "N'existe pas"); // Afficher les films d'un acteur qui n'existe pas.
 
 	// Détruire tout avant de terminer le programme.
 	listeFilms.detruire(true);
