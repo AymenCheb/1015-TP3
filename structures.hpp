@@ -26,6 +26,8 @@ private:
 };
 
 struct ListeActeurs {
+	ListeActeurs();
+	ListeActeurs(int nElements);
 	int capacite, nElements;
 	std::unique_ptr<Acteur* []> elements; // Pointeur vers un tableau de Acteur*, chaque Acteur* pointant vers un Acteur.
 };
