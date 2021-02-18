@@ -96,7 +96,18 @@ void ListeFilms::enleverFilm(const Film* film)
 // Fonction pour trouver un Acteur par son nom dans une ListeFilms, qui retourne un pointeur vers l'acteur, ou nullptr si l'acteur n'est pas trouvé.  Devrait utiliser span.
 //[
 // Voir la NOTE ci-dessous pourquoi Acteur* n'est pas const.  Noter que c'est valide puisque c'est la struct uniquement qui est const dans le paramètre, et non ce qui est pointé par la struct.
-span<Acteur*> spanListeActeurs(const ListeActeurs& liste) { return span(liste.elements.get(), liste.nElements); }
+span<Acteur*> spanListeActeurs(const ListeActeurs& liste) {
+
+	Acteur* acteurs[100];
+	for (int i = 0; i < 100; i++)
+	{
+		if (i >= liste.nElements)
+		{
+			break;
+		}
+		acteurs[i] = liste.elements[i].get();
+	}
+	return span(acteurs, liste.nElements); }
 
 //NOTE: Doit retourner un Acteur modifiable, sinon on ne peut pas l'utiliser pour modifier l'acteur tel que demandé dans le main, et on ne veut pas faire écrire deux versions aux étudiants dans le TD2.
 Acteur* ListeFilms::trouverActeur(const string& nomActeur) const
@@ -151,7 +162,7 @@ Film* lireFilm(istream& fichier, ListeFilms& listeFilms)
 	ListeActeurs listeActeurs = ListeActeurs(filmp->acteurs.nElements);
 	for (Acteur*& acteur : spanListeActeurs(filmp->acteurs)) {
 		acteur = lireActeur(fichier, listeFilms);
-		acteur->joueDans.ajouterFilm(filmp);
+		//acteur->joueDans.ajouterFilm(filmp);
 	}
 	return filmp;
 }
@@ -176,22 +187,22 @@ ListeFilms creerListe(string nomFichier)
 void detruireActeur(Acteur* acteur)
 {
 	cout << "Destruction Acteur " << acteur->nom << endl;
-	acteur->joueDans.detruire();
+	//acteur->joueDans.detruire();
 	delete acteur;
 }
 
-bool joueEncore(const Acteur* acteur)
-{
-	return acteur->joueDans.size() != 0;
-}
+//bool joueEncore(const Acteur* acteur)
+//{
+//	//return acteur->joueDans.size() != 0;
+//}
 
 void detruireFilm(Film* film)
 {
-	for (Acteur* acteur : spanListeActeurs(film->acteurs)) {
-		acteur->joueDans.enleverFilm(film);
-		if (!joueEncore(acteur))
-			detruireActeur(acteur);
-	}
+	//for (Acteur* acteur : spanListeActeurs(film->acteurs)) {
+	//	//acteur->joueDans.enleverFilm(film);
+	//	if (!joueEncore(acteur))
+	//		detruireActeur(acteur);
+	//}
 	cout << "Destruction Film " << film->titre << endl;
 	delete film;
 }

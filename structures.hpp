@@ -36,12 +36,12 @@ struct ListeActeurs {
 ListeActeurs::ListeActeurs() {
 	this->capacite = 1;
 	this->nElements = 0;
-	this->elements = make_unique< Acteur* []>(1);
+	this->elements = make_unique<std::shared_ptr<Acteur>[]>(1);
 }
 ListeActeurs::ListeActeurs(int nombreElements) {
 	this->capacite = nombreElements;
 	this->nElements = nombreElements;
-	this->elements = make_unique< Acteur* []>(nombreElements);
+	this->elements = make_unique<std::shared_ptr<Acteur>[]>(nombreElements);
 }
 
 struct Film
