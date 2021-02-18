@@ -185,7 +185,6 @@ void detruireFilm(Film* film)
 			detruireActeur(acteur);
 	}
 	cout << "Destruction Film " << film->titre << endl;
-	delete[] film->acteurs.elements.get();
 	delete film;
 }
 //]
