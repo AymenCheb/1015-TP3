@@ -131,15 +131,15 @@ Acteur* lireActeur(istream& fichier, ListeFilms& listeFilms)
 
 Film* lireFilm(istream& fichier, ListeFilms& listeFilms)
 {
-	Film film = {};
-	film.titre       = lireString(fichier);
-	film.realisateur = lireString(fichier);
-	film.anneeSortie = lireUint16 (fichier);
-	film.recette     = lireUint16 (fichier);
-	film.acteurs.nElements = lireUint8 (fichier);
+	auto filmp = new Film;
+	filmp->titre       = lireString(fichier);
+	filmp->realisateur = lireString(fichier);
+	filmp->anneeSortie = lireUint16 (fichier);
+	filmp->recette     = lireUint16 (fichier);
+	filmp->acteurs.nElements = lireUint8 (fichier);
 
-	Film* filmp = new Film(film); //NOTE: On aurait normalement fait le "new" au début de la fonction pour directement mettre les informations au bon endroit; on le fait ici pour que le code ci-dessus puisse être directement donné aux étudiants dans le TD2 sans qu'ils aient le "new" déjà écrit.  On aurait alors aussi un nom "film" pour le pointeur, pour suivre le guide de codage; on a mis un suffixe "p", contre le guide de codage, pour le différencier de "film".
-	cout << "Création Film " << film.titre << endl;
+	 //NOTE: On aurait normalement fait le "new" au début de la fonction pour directement mettre les informations au bon endroit; on le fait ici pour que le code ci-dessus puisse être directement donné aux étudiants dans le TD2 sans qu'ils aient le "new" déjà écrit.  On aurait alors aussi un nom "film" pour le pointeur, pour suivre le guide de codage; on a mis un suffixe "p", contre le guide de codage, pour le différencier de "film".
+	cout << "Création Film " << filmp->titre << endl;
 	filmp->acteurs.elements = make_unique< Acteur*[]>(filmp->acteurs.nElements); // [filmp->acteurs.nElements]
 	for (Acteur*& acteur : spanListeActeurs(filmp->acteurs)) {
 		acteur = lireActeur(fichier, listeFilms);
@@ -185,7 +185,7 @@ void detruireFilm(Film* film)
 			detruireActeur(acteur);
 	}
 	cout << "Destruction Film " << film->titre << endl;
-	delete[] film->acteurs.elements;
+	delete[] film->acteurs.elements.get();
 	delete film;
 }
 //]

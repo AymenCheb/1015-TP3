@@ -2,11 +2,10 @@
 // Par Francois-R.Boyer@PolyMtl.ca
 #pragma once
 // Structures mémoires pour une collection de films.
-
+#include <memory>
 #include <string>
 #include "gsl/span"
 using gsl::span;
-
 struct Film; struct Acteur; // Permet d'utiliser les types alors qu'ils seront défini après.
 
 class ListeFilms {
@@ -28,7 +27,7 @@ private:
 
 struct ListeActeurs {
 	int capacite, nElements;
-	unique_ptr<Acteur* []> elements; // Pointeur vers un tableau de Acteur*, chaque Acteur* pointant vers un Acteur.
+	std::unique_ptr<Acteur* []> elements; // Pointeur vers un tableau de Acteur*, chaque Acteur* pointant vers un Acteur.
 };
 
 struct Film
