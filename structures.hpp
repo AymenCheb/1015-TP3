@@ -43,9 +43,7 @@ ListeActeurs::ListeActeurs(int nombreElements) {
 	this->nElements = nombreElements;
 	this->elements = make_unique< Acteur* []>(nombreElements);
 }
-Film::Film(int nombreActeurs) {
-	this->acteurs = ListeActeurs(nombreActeurs);
-}
+
 struct Film
 {
 	Film(int nombreActeurs);
@@ -53,7 +51,9 @@ struct Film
 	int anneeSortie, recette; // Année de sortie et recette globale du film en millions de dollars
 	ListeActeurs acteurs;
 };
-
+Film::Film(int nombreActeurs) {
+	this->acteurs = ListeActeurs(nombreActeurs);
+}
 struct Acteur
 {
 	std::string nom; int anneeNaissance; char sexe;
