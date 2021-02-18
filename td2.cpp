@@ -133,19 +133,28 @@ ListeActeurs::ListeActeurs(int nombreElements) {
 	this->nElements = nombreElements;
 	make_unique< Acteur* []>(nombreElements);
 }
+Film::Film(int nombreActeurs) {
+	this->acteurs = ListeActeurs(nombreActeurs);
+}
 Film* lireFilm(istream& fichier, ListeFilms& listeFilms)
 {
-	Film* filmp = new Film;
-	filmp->titre       = lireString(fichier);
-	filmp->realisateur = lireString(fichier);
-	filmp->anneeSortie = lireUint16 (fichier);
-	filmp->recette     = lireUint16 (fichier);
-	filmp->acteurs.nElements = lireUint8 (fichier);
+	
+	string titre = lireString(fichier);
+	string realisateur = lireString(fichier);
+	int anneeSortie = lireUint16(fichier);
+	int recette = lireUint16(fichier);
+	int nombreActeurs = lireUint8(fichier);
+
+	Film* filmp = new Film(nombreActeurs);
+	filmp->titre = titre;
+	filmp->realisateur = realisateur;
+	filmp->anneeSortie = anneeSortie;
+	filmp->recette = recette;
+	filmp->acteurs.nElements = nombreActeurs;
 
 	 //NOTE: On aurait normalement fait le "new" au début de la fonction pour directement mettre les informations au bon endroit; on le fait ici pour que le code ci-dessus puisse être directement donné aux étudiants dans le TD2 sans qu'ils aient le "new" déjà écrit.  On aurait alors aussi un nom "film" pour le pointeur, pour suivre le guide de codage; on a mis un suffixe "p", contre le guide de codage, pour le différencier de "film".
 	cout << "Création Film " << filmp->titre << endl;
 	ListeActeurs listeActeurs = ListeActeurs(filmp->acteurs.nElements);
-	filmp->acteurs.elements = &listeActeurs; // [filmp->acteurs.nElements]
 	for (Acteur*& acteur : spanListeActeurs(filmp->acteurs)) {
 		acteur = lireActeur(fichier, listeFilms);
 		acteur->joueDans.ajouterFilm(filmp);

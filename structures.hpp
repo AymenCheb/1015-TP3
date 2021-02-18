@@ -34,6 +34,7 @@ struct ListeActeurs {
 
 struct Film
 {
+	Film(int nombreActeurs);
 	std::string titre, realisateur; // Titre et nom du réalisateur (on suppose qu'il n'y a qu'un réalisateur).
 	int anneeSortie, recette; // Année de sortie et recette globale du film en millions de dollars
 	ListeActeurs acteurs;
