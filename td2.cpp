@@ -117,7 +117,7 @@ Acteur* ListeFilms::trouverActeur(const string& nomActeur) const
 // Les fonctions pour lire le fichier et créer/allouer une ListeFilms.
 
 
-Acteur* lireActeur(istream& fichier, ListeFilms& listeFilms)
+shared_ptr<Acteur> lireActeur(istream& fichier, ListeFilms& listeFilms)
 {
 	Acteur acteur = {};
 	acteur.nom            = lireString(fichier);
@@ -125,12 +125,16 @@ Acteur* lireActeur(istream& fichier, ListeFilms& listeFilms)
 	acteur.sexe           = lireUint8  (fichier);
 
 	Acteur* acteurExistant = listeFilms.trouverActeur(acteur.nom);
-	if (acteurExistant != nullptr)
-		return acteurExistant;
+	if (acteurExistant != nullptr) {
+		shared_ptr<Acteur> shared_ptr_acteurExistant = make_shared<Acteur>(*acteurExistant);
+		return shared_ptr_acteurExistant;
+	}
 	else {
 		cout << "Création Acteur " << acteur.nom << endl;
-		return new Acteur(acteur);
+		shared_ptr<Acteur> shared_ptr_acteur = make_shared<Acteur>(acteur);
+		return shared_ptr_acteur;
 	}
+	
 }
 
 Film* lireFilm(istream& fichier, ListeFilms& listeFilms)
@@ -153,7 +157,7 @@ Film* lireFilm(istream& fichier, ListeFilms& listeFilms)
 	cout << "Création Film " << filmp->titre << endl;
 	ListeActeurs listeActeurs = ListeActeurs(filmp->acteurs.nElements);
 	for (shared_ptr<Acteur>& acteur : spanListeActeurs(filmp->acteurs)) {
-		acteur = lireActeur(fichier, listeFilms); // = make_shared_ptre(lireActeur(fichier, listeFilms);
+		acteur = make_shared<Acteur>(*lireActeur(fichier, listeFilms)); 
 		//acteur->joueDans.ajouterFilm(filmp);
 	}
 	return filmp;
