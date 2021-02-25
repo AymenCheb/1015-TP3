@@ -8,7 +8,7 @@
 
 #include "bibliotheque_cours.hpp"
 #include "verification_allocation.hpp" // Nos fonctions pour le rapport de fuites de mémoire.
-
+#include <sstream>
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -220,18 +220,18 @@ void afficherActeur(const Acteur& acteur)
 {
 	cout << "  " << acteur.nom << ", " << acteur.anneeNaissance << " " << acteur.sexe << endl;
 }
-
+ostream& operator<<(ostream& o, const Film& film) {
+	
+	cout << "Titre : " << film.titre << "\n" << "Realisateur : " << film.realisateur << " Annee : "<< film.anneeSortie << " Recette : " << film.recette << "M$" << " Acteurs : " << endl;
+	for (const shared_ptr<Acteur> acteur : spanListeActeurs(film.acteurs))
+		afficherActeur(*acteur);
+	return o << "" << endl;
+}
 // Fonction pour afficher un film avec tous ces acteurs (en utilisant la fonction afficherActeur ci-dessus).
 //[
 void afficherFilm(const Film& film)
 {
-	cout << "Titre: " << film.titre << endl;
-	cout << "  Réalisateur: " << film.realisateur << "  Année :" << film.anneeSortie << endl;
-	cout << "  Recette: " << film.recette << "M$" << endl;
-
-	cout << "Acteurs:" << endl;
-	for (const shared_ptr<Acteur> acteur : spanListeActeurs(film.acteurs))
-		afficherActeur(*acteur);
+	cout << film;
 }
 //]
 
