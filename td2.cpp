@@ -255,6 +255,13 @@ void afficherListeFilms(const ListeFilms& listeFilms)
 //		afficherListeFilms(acteur->joueDans);
 //}
 
+Film* ListeFilms::operator[](int index) {
+	return elements[index];
+}
+Film ListeFilms::operator=(Film nouveauFilm) {
+	
+}
+
 int main()
 {
 	#ifdef VERIFICATION_ALLOCATION_INCLUS
@@ -276,10 +283,12 @@ int main()
 
 	listeFilms.trouverActeur("Benedict Cumberbatch")->anneeNaissance = 1976;
 
-	cout << ligneDeSeparation << "Liste des films où Benedict Cumberbatch joue sont:" << endl;
+	//cout << ligneDeSeparation << "Liste des films où Benedict Cumberbatch joue sont:" << endl;
 	// Affiche la liste des films où Benedict Cumberbatch joue.  Il devrait y avoir Le Hobbit et Le jeu de l'imitation.
 	//afficherFilmographieActeur(listeFilms, "Benedict Cumberbatch");
 	
+	//Creation de Skylien: 
+	Film Skylien = *listeFilms[0];
 	// Détruit et enlève le premier film de la liste (Alien).
 	detruireFilm(listeFilms.enSpan()[0]);
 	listeFilms.enleverFilm(listeFilms.enSpan()[0]);

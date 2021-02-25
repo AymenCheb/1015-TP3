@@ -18,12 +18,15 @@ public:
 	span<Film*> enSpan() const;
 	int size() const { return nElements; }
 	void detruire(bool possedeLesFilms = false);
-
+	Film* operator[](int index);
+	Film operator=(const Film nouveauFilm);
 private:
 	void changeDimension(int nouvelleCapacite);
 
 	int capacite = 0, nElements = 0;
 	Film** elements = nullptr; // Pointeur vers un tableau de Film*, chaque Film* pointant vers un Film.
+
+	
 };
 
 struct ListeActeurs {
@@ -50,6 +53,7 @@ struct Film
 	std::string titre, realisateur; // Titre et nom du réalisateur (on suppose qu'il n'y a qu'un réalisateur).
 	int anneeSortie, recette; // Année de sortie et recette globale du film en millions de dollars
 	ListeActeurs acteurs;
+	Film operator*(Film* film);
 };
 Film::Film(int nombreActeurs) {
 	this->acteurs = ListeActeurs(nombreActeurs);
