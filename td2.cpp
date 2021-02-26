@@ -255,13 +255,29 @@ void afficherListeFilms(const ListeFilms& listeFilms)
 //		afficherListeFilms(acteur->joueDans);
 //}
 
-Film* ListeFilms::operator[](int index) {
-	return elements[index];
-}
-Film ListeFilms::operator=(Film nouveauFilm) {
-	
+Film& ListeFilms::operator[](int index) {
+	return *this->elements[index];
 }
 
+//Film& Film::operator=(Film& nouveauFilm) {
+//	this->acteurs.capacite = nouveauFilm.acteurs.capacite;
+//	this->acteurs.nElements = nouveauFilm.acteurs.nElements;
+//	this->acteurs.elements = move(nouveauFilm.acteurs.elements);
+//	this->anneeSortie = nouveauFilm.anneeSortie;
+//	this->recette = nouveauFilm.recette;
+//	this->realisateur = nouveauFilm.realisateur;
+//	this->titre = nouveauFilm.titre;
+//	return *this;
+//}
+Film::Film(Film& nouveauFilm) {
+	this->acteurs.capacite = nouveauFilm.acteurs.capacite;
+	this->acteurs.nElements = nouveauFilm.acteurs.nElements;
+	this->acteurs.elements = move(nouveauFilm.acteurs.elements);
+	this->anneeSortie = nouveauFilm.anneeSortie;
+	this->recette = nouveauFilm.recette;
+	this->realisateur = nouveauFilm.realisateur;
+	this->titre = nouveauFilm.titre;
+}
 int main()
 {
 	#ifdef VERIFICATION_ALLOCATION_INCLUS
@@ -288,7 +304,11 @@ int main()
 	//afficherFilmographieActeur(listeFilms, "Benedict Cumberbatch");
 	
 	//Creation de Skylien: 
-	Film Skylien = *listeFilms[0];
+	Film Skylien = listeFilms[0];
+	Skylien.titre = "Skylien";
+	Skylien.acteurs.elements[0] = listeFilms.donnerActeur(1, 0);
+	Skylien.acteurs.elements[0].get()->changerNom("Daniel Wroughton Craig");
+	cout << Skylien << listeFilms[0] << listeFilms[1];
 	// Détruit et enlève le premier film de la liste (Alien).
 	detruireFilm(listeFilms.enSpan()[0]);
 	listeFilms.enleverFilm(listeFilms.enSpan()[0]);

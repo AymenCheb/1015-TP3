@@ -14,12 +14,13 @@ public:
 	ListeFilms() = default;
 	void ajouterFilm(Film* film);
 	void enleverFilm(const Film* film);
+	shared_ptr<Acteur> donnerActeur(int indexFilm, int indexActeur);
 	Acteur* trouverActeur(const std::string& nomActeur) const;
 	span<Film*> enSpan() const;
 	int size() const { return nElements; }
 	void detruire(bool possedeLesFilms = false);
-	Film* operator[](int index);
-	Film operator=(const Film nouveauFilm);
+	Film& operator[](int index);
+	
 private:
 	void changeDimension(int nouvelleCapacite);
 
@@ -28,6 +29,7 @@ private:
 
 	
 };
+
 
 struct ListeActeurs {
 	ListeActeurs();
@@ -50,16 +52,26 @@ ListeActeurs::ListeActeurs(int nombreElements) {
 struct Film
 {
 	Film(int nombreActeurs);
+	Film(Film&);
 	std::string titre, realisateur; // Titre et nom du réalisateur (on suppose qu'il n'y a qu'un réalisateur).
 	int anneeSortie, recette; // Année de sortie et recette globale du film en millions de dollars
 	ListeActeurs acteurs;
-	Film operator*(Film* film);
+	//Film& operator=(Film& nouveauFilm);
+
 };
 Film::Film(int nombreActeurs) {
 	this->acteurs = ListeActeurs(nombreActeurs);
 }
+
 struct Acteur
 {
 	std::string nom; int anneeNaissance; char sexe;
+	void changerNom(string nouveauNom);
 	//ListeFilms joueDans;
 };
+void Acteur::changerNom(string nouveauNom) {
+	this->nom = nouveauNom;
+}
+shared_ptr<Acteur> ListeFilms::donnerActeur(int indexFilm, int indexActeur) {
+	return this->elements[indexFilm]->acteurs.elements[indexActeur];
+}
