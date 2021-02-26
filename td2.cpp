@@ -270,9 +270,12 @@ Film& ListeFilms::operator[](int index) {
 //	return *this;
 //}
 Film::Film(Film& nouveauFilm) {
-	this->acteurs.capacite = nouveauFilm.acteurs.capacite;
-	this->acteurs.nElements = nouveauFilm.acteurs.nElements;
-	this->acteurs.elements = move(nouveauFilm.acteurs.elements);
+	this->acteurs = ListeActeurs(nouveauFilm.acteurs.nElements);
+	acteurs.capacite = nouveauFilm.acteurs.capacite;
+	for (int i = 0; i < acteurs.nElements; i++)
+	{
+		this->acteurs.elements[i] = nouveauFilm.acteurs.elements[i];
+	}
 	this->anneeSortie = nouveauFilm.anneeSortie;
 	this->recette = nouveauFilm.recette;
 	this->realisateur = nouveauFilm.realisateur;
