@@ -255,9 +255,6 @@ void afficherListeFilms(const ListeFilms& listeFilms)
 //		afficherListeFilms(acteur->joueDans);
 //}
 
-Film& ListeFilms::operator[](int index) {
-	return *this->elements[index];
-}
 
 //Film& Film::operator=(Film& nouveauFilm) {
 //	this->acteurs.capacite = nouveauFilm.acteurs.capacite;
@@ -269,18 +266,6 @@ Film& ListeFilms::operator[](int index) {
 //	this->titre = nouveauFilm.titre;
 //	return *this;
 //}
-Film::Film(Film& nouveauFilm) {
-	this->acteurs = ListeActeurs(nouveauFilm.acteurs.nElements);
-	acteurs.capacite = nouveauFilm.acteurs.capacite;
-	for (int i = 0; i < acteurs.nElements; i++)
-	{
-		this->acteurs.elements[i] = nouveauFilm.acteurs.elements[i];
-	}
-	this->anneeSortie = nouveauFilm.anneeSortie;
-	this->recette = nouveauFilm.recette;
-	this->realisateur = nouveauFilm.realisateur;
-	this->titre = nouveauFilm.titre;
-}
 int main()
 {
 	#ifdef VERIFICATION_ALLOCATION_INCLUS
@@ -305,13 +290,44 @@ int main()
 	//cout << ligneDeSeparation << "Liste des films où Benedict Cumberbatch joue sont:" << endl;
 	// Affiche la liste des films où Benedict Cumberbatch joue.  Il devrait y avoir Le Hobbit et Le jeu de l'imitation.
 	//afficherFilmographieActeur(listeFilms, "Benedict Cumberbatch");
-	
 	//Creation de Skylien: 
 	Film Skylien = listeFilms[0];
 	Skylien.titre = "Skylien";
 	Skylien.acteurs.elements[0] = listeFilms.donnerActeur(1, 0);
 	Skylien.acteurs.elements[0].get()->changerNom("Daniel Wroughton Craig");
 	cout << Skylien << listeFilms[0] << listeFilms[1];
+	// Cherche un film avec un critère spécifique: 
+	Film* ptrFilm = listeFilms.chercherFilm([](Film* Film) {return Film->recette == 955; });
+	cout << "Le film avec une recette de 955M$ est: " << endl;
+	if (ptrFilm != nullptr)
+	{
+		cout << *ptrFilm;
+	}
+	cout << "Le film avec pour titre Steven DuFour ou l'arnaque d'un cours est: " << endl;
+	ptrFilm = listeFilms.chercherFilm([](Film* Film) {return Film->titre == "Steven DuFour ou l'arnaque d'un cours"; });
+	if (ptrFilm != nullptr)
+	{
+		cout << *ptrFilm;
+	}
+	// Fais la copie de ListeTextes:
+	Liste<string> listeTextes(2);
+	listeTextes.elements[0] = make_shared<string>("Un Alien de notre monde");
+	listeTextes.elements[1] = make_shared<string>("Un humain random");
+	Liste<string> listeTextes2 = listeTextes;
+	//Modifie les listeTextes
+	listeTextes.elements[0] = make_shared<string>("D'un monde alternatif vient un nouveau 1er string");
+	*listeTextes.elements[1] += " de notre monde";
+	//Afficher les textes
+	cout << "La premiere phrase de la liste originale est: " << endl;
+	cout << *listeTextes.elements[0] << endl;
+	cout << "La premiere phrase de la liste 2 est: " << endl;
+	cout << *listeTextes2.elements[0] << endl;
+
+	cout << "La deuxieme phrase de la liste originale est: " << endl;
+	cout << *listeTextes.elements[1] << endl;
+	cout << "La deuxième phrase de la liste 2 est: " << endl;
+	cout << *listeTextes2.elements[1] << endl;
+
 	// Détruit et enlève le premier film de la liste (Alien).
 	detruireFilm(listeFilms.enSpan()[0]);
 	listeFilms.enleverFilm(listeFilms.enSpan()[0]);
