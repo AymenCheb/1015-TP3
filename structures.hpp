@@ -1,117 +1,86 @@
-// Solutionnaire du TD2 INF1015 hiver 2021
+﻿// Solutionnaire du TD3 INF1015 hiver 2021
 // Par Francois-R.Boyer@PolyMtl.ca
 #pragma once
 // Structures mémoires pour une collection de films.
-#include <iostream>
-#include <memory>
+
 #include <string>
+#include <memory>
+#include <functional>
+#include <cassert>
 #include "gsl/span"
 using gsl::span;
 using namespace std;
-struct Film; struct Acteur; // Permet d'utiliser les types alors qu'ils seront défini après.
 
+struct Film; struct Acteur; // Permet d'utiliser les types alors qu'ils seront défini après.
 
 class ListeFilms {
 public:
 	ListeFilms() = default;
 	void ajouterFilm(Film* film);
 	void enleverFilm(const Film* film);
-	shared_ptr<Acteur> donnerActeur(int indexFilm, int indexActeur);
-	Acteur* trouverActeur(const std::string& nomActeur) const;
+	shared_ptr<Acteur> trouverActeur(const string& nomActeur) const;
 	span<Film*> enSpan() const;
 	int size() const { return nElements; }
 	void detruire(bool possedeLesFilms = false);
-	Film& operator[](int index) {
-		return *this->elements[index];
-	};
-	template <typename PredicatUnaire>
-	Film* chercherFilm(const PredicatUnaire& critere) {
-		for (int i = 0; i < this->nElements; i++)
-		{
-			if (critere(this->elements[i])) {
-				cout << "Un film satisfaisant le critere fournit a ete trouve: " << '\n';
-				return this->elements[i];
-			}
-				
-		}
-		cout << "Aucun film satisfaisant le critere n'a ete trouve " << '\n';
+	Film*& operator[] (int index) { return elements[index]; }
+	Film* trouver(const function<bool(const Film&)>& critere) {
+		for (auto& film : enSpan())
+			if (critere(*film))
+				return film;
 		return nullptr;
 	}
-	
+
 private:
 	void changeDimension(int nouvelleCapacite);
 
 	int capacite = 0, nElements = 0;
 	Film** elements = nullptr; // Pointeur vers un tableau de Film*, chaque Film* pointant vers un Film.
-
-	
 };
 
-
-template <typename typeDeListe>
+template <typename T>
 class Liste {
 public:
-	int capacite, nElements;
-	std::unique_ptr<std::shared_ptr<typeDeListe>[]> elements; // Pointeur vers un tableau de Acteur*, chaque Acteur* pointant vers un Acteur.
-	Liste() {
-		this->capacite = 1;
-		this->nElements = 0;
-		this->elements = make_unique<std::shared_ptr<typeDeListe>[]>(1);
-	};
-	Liste(int nElements) {
-		this->capacite = nElements;
-		this->nElements = nElements;
-		this->elements = make_unique<std::shared_ptr<typeDeListe>[]>(nElements);
-	};
-	void copyListe(const Liste<typeDeListe>& nouvelleListe) {
-		this->elements = make_unique<std::shared_ptr<typeDeListe>[]>(nouvelleListe.nElements);
-		this->nElements = nouvelleListe.nElements;
-		this->capacite = nouvelleListe.capacite;
-		for (int i = 0; i < this->nElements; i++)
-		{
-			this->elements[i] = nouvelleListe.elements[i];
-		};
+	Liste() = default;
+	explicit Liste(int capaciteInitiale) :  // explicit n'est pas matière à ce TD, mais c'est un cas où c'est bon de l'utiliser, pour ne pas qu'il construise implicitement une Liste à partir d'un entier, par exemple "maListe = 4;".
+		capacite_(capaciteInitiale),
+		elements_(make_unique<shared_ptr<T>[]>(capacite_))
+	{
 	}
-	Liste(const Liste<typeDeListe>& nouvelleListe) {
-		this->copyListe(nouvelleListe);
+	Liste(const Liste<T>& autre) :
+		capacite_(autre.nElements_),
+		nElements_(autre.nElements_),
+		elements_(make_unique<shared_ptr<T>[]>(nElements_))
+	{
+		for (int i = 0; i < nElements_; ++i)
+			elements_[i] = autre.elements_[i];
 	}
-	Liste<typeDeListe> operator=(const Liste<typeDeListe>& nouvelleListe) {
-		this->copyListe(nouvelleListe);
-		return *this;
+	Liste(Liste<T>&&) = default;  // Pas nécessaire, mais puisque c'est si simple avec unique_ptr...
+	Liste<T>& operator= (Liste<T>&&) noexcept = default;  // Utilisé pour l'initialisation dans lireFilm.
+
+	void ajouter(shared_ptr<T> element)
+	{
+		assert(nElements_ < capacite_);  // Comme dans le TD précédent, on ne demande pas la réallocation pour ListeActeurs...
+		elements_[nElements_++] = move(element);
 	}
+
+	// Noter que ces accesseurs const permettent de modifier les éléments; on pourrait vouloir des versions const qui retournent des const shared_ptr, et des versions non const qui retournent des shared_ptr.
+	shared_ptr<T>& operator[] (int index) const { return elements_[index]; }
+	span<shared_ptr<T>> enSpan() const { return span(elements_.get(), nElements_); }
+
+private:
+	int capacite_ = 0, nElements_ = 0;
+	unique_ptr<shared_ptr<T>[]> elements_; // Pointeur vers un tableau de Acteur*, chaque Acteur* pointant vers un Acteur.
 };
 using ListeActeurs = Liste<Acteur>;
-struct Point { double x, y; };
+
 struct Film
 {
-	Film(int nombreActeurs) {
-		this->acteurs = ListeActeurs(nombreActeurs);
-	}
-	Film(const Film& nouveauFilm) {
-		this->acteurs = ListeActeurs(nouveauFilm.acteurs.nElements);
-		acteurs.capacite = nouveauFilm.acteurs.capacite;
-		this->acteurs = nouveauFilm.acteurs;
-		this->anneeSortie = nouveauFilm.anneeSortie;
-		this->recette = nouveauFilm.recette;
-		this->realisateur = nouveauFilm.realisateur;
-		this->titre = nouveauFilm.titre;
-	}
-	std::string titre, realisateur; // Titre et nom du réalisateur (on suppose qu'il n'y a qu'un réalisateur).
-	int anneeSortie, recette; // Année de sortie et recette globale du film en millions de dollars
+	string titre, realisateur; // Titre et nom du réalisateur (on suppose qu'il n'y a qu'un réalisateur).
+	int anneeSortie=0, recette=0; // Année de sortie et recette globale du film en millions de dollars
 	ListeActeurs acteurs;
-
 };
 
 struct Acteur
 {
-	std::string nom; int anneeNaissance; char sexe;
-	void changerNom(string nouveauNom);
-	//ListeFilms joueDans;
+	string nom; int anneeNaissance=0; char sexe='\0';
 };
-void Acteur::changerNom(string nouveauNom) {
-	this->nom = nouveauNom;
-}
-shared_ptr<Acteur> ListeFilms::donnerActeur(int indexFilm, int indexActeur) {
-	return this->elements[indexFilm]->acteurs.elements[indexActeur];
-}
-
