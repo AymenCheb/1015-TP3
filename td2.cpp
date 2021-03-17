@@ -244,6 +244,16 @@ void Film::afficher() const {
 	for (const shared_ptr<Acteur>& acteur : this->acteurs.enSpan())
 		cout << *acteur;
 }
+void afficherListeItems(vector<Item*> bibilotheque) {
+	static const string ligneDeSeparation = //[
+		"\033[32m────────────────────────────────────────\033[0m\n";
+	cout << ligneDeSeparation;
+	for (int i = 0; i < bibilotheque.size(); i++)
+	{
+		cout << *bibilotheque[i] << endl;
+		cout << ligneDeSeparation;
+	}
+}
 int main()
 {
 	#ifdef VERIFICATION_ALLOCATION_INCLUS
@@ -261,7 +271,7 @@ int main()
 		contenuBibliotheque.push_back(listeFilms.retournerFilm(i));
 	}
 	ajouterLivres(contenuBibliotheque, "livres.txt");
-	cout << *contenuBibliotheque[9];
+	afficherListeItems(contenuBibliotheque);
 	cout << ligneDeSeparation << "Le premier film de la liste est:" << endl;
 
 	// Détruire tout avant de terminer le programme.
