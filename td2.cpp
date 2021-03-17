@@ -3,7 +3,6 @@
 
 #pragma region "Includes"//{
 #define _CRT_SECURE_NO_WARNINGS // On permet d'utiliser les fonctions de copies de chaînes qui sont considérées non sécuritaires.
-
 #include "structures.hpp"      // Structures de données pour la collection de films en mémoire.
 
 #include "bibliotheque_cours.hpp"
@@ -146,33 +145,17 @@ Film* lireFilm(istream& fichier, ListeFilms& listeFilms)
 
 	return film;
 }
-//Livre* lireLivre(string nomFichier) {
-//	ifstream fichierLivre(nomFichier);
-//	Livre* livre = new Livre;
-//	
-//	string tempString;
-//	string infosLivres[5];
-//	for (int i = 0; i < 5; i++)
-//	{
-//		fichierLivre >> quoted(tempString);
-//		infosLivres[i] = tempString;
-//	}
-//	livre->titre = infosLivres[0];
-//	livre->anneeSortie = stoi(infosLivres[1]);
-//	livre->Auteur = infosLivres[2];
-//	livre->MillionsDeCopiesVendues = stoi(infosLivres[3]);
-//	livre->nombreDePages = stoi(infosLivres[4]);
-//	return livre;
-//}
-void ajouterLivre(vector<Item*> &bibliotheque, string nomFichier){
+
+void ajouterLivres(vector<Item*> &bibliotheque, string nomFichier){
 	ifstream fichierLivre(nomFichier);
 	string ligne;
-	string tempString = "";
-	string oldString = " ";
+	string tempString;
+	string oldString;
 	string infosLivres[5];
 	while (true)
 	{
-		 shared_ptr<Livre> livre = make_shared<Livre>();
+		 /*shared_ptr<Livre> livre = make_shared<Livre>();*/
+		Livre* livre = new Livre;
 		for (int i = 0; i < 5; i++)
 		{
 			oldString = tempString;
@@ -188,7 +171,7 @@ void ajouterLivre(vector<Item*> &bibliotheque, string nomFichier){
 		livre->Auteur = infosLivres[2];
 		livre->MillionsDeCopiesVendues = stoi(infosLivres[3]);
 		livre->nombreDePages = stoi(infosLivres[4]);
-		bibliotheque.push_back(livre.get());
+		bibliotheque.push_back(livre);
 	}
 	
 }
@@ -224,21 +207,11 @@ ostream& operator<< (ostream& os, const Acteur& acteur)
 {
 	return os << "  " << acteur.nom << ", " << acteur.anneeNaissance << " " << acteur.sexe << endl;
 }
-
-// Fonction pour afficher un film avec tous ces acteurs (en utilisant la fonction afficherActeur ci-dessus).
-//[
-ostream& operator<< (ostream& os, const Film& film)
-{
-	os << "Titre: " << film.titre << endl;
-	os << "  Réalisateur: " << film.realisateur << "  Année :" << film.anneeSortie << endl;
-	os << "  Recette: " << film.recette << "M$" << endl;
-
-	os << "Acteurs:" << endl;
-	for (const shared_ptr<Acteur>& acteur : film.acteurs.enSpan())
-		os << *acteur;
-	return os;
+ostream& operator<< (ostream& os, const Item& item) {
+	item.afficher();
+	return os << endl;
 }
-//]
+
 
 // Pas demandé dans l'énoncé de tout mettre les affichages avec surcharge, mais pourquoi pas.
 ostream& operator<< (ostream& os, const ListeFilms& listeFilms)
@@ -252,6 +225,25 @@ ostream& operator<< (ostream& os, const ListeFilms& listeFilms)
 	return os;
 }
 
+void Item::afficher() const {
+	cout << " Titre: " << titre << endl;
+	cout << " Annee de sortie: " << anneeSortie << endl;
+}
+void Livre::afficher() const {
+	Item::afficher();
+	cout << "Auteur: " << Auteur << '\n';
+	cout << "Copies vendues: " << MillionsDeCopiesVendues << "M \n";
+	cout << "Nombre de pages: " << nombreDePages << '\n';
+}
+void Film::afficher() const {
+	Item::afficher();
+	cout << "  Réalisateur: " << this->realisateur << '\n';
+	cout << "  Recette: " << this->recette << "M$" << '\n';
+
+	cout << "Acteurs:" << '\n';
+	for (const shared_ptr<Acteur>& acteur : this->acteurs.enSpan())
+		cout << *acteur;
+}
 int main()
 {
 	#ifdef VERIFICATION_ALLOCATION_INCLUS
@@ -268,72 +260,9 @@ int main()
 	{
 		contenuBibliotheque.push_back(listeFilms.retournerFilm(i));
 	}
-	ajouterLivre(contenuBibliotheque, "livres.txt");
+	ajouterLivres(contenuBibliotheque, "livres.txt");
+	cout << *contenuBibliotheque[9];
 	cout << ligneDeSeparation << "Le premier film de la liste est:" << endl;
-	// Le premier film de la liste.  Devrait être Alien.
-	cout << *listeFilms[0];
-	// Tests chapitre 7:
-	ostringstream tamponStringStream;
-	tamponStringStream << *listeFilms[0];
-	string filmEnString = tamponStringStream.str();
-	assert(filmEnString == 
-		"Titre: Alien\n"
-		"  Réalisateur: Ridley Scott  Année :1979\n"
-		"  Recette: 203M$\n"
-		"Acteurs:\n"
-		"  Tom Skerritt, 1933 M\n"
-		"  Sigourney Weaver, 1949 F\n"
-		"  John Hurt, 1940 M\n"
-	);
-
-	cout << ligneDeSeparation << "Les films sont:" << endl;
-	// Affiche la liste des films.  Il devrait y en avoir 7.
-	cout << listeFilms;
-
-	listeFilms.trouverActeur("Benedict Cumberbatch")->anneeNaissance = 1976;
-
-	// Tests chapitres 7-8:
-	// Les opérations suivantes fonctionnent.
-	Film skylien = *listeFilms[0];
-	skylien.titre = "Skylien";
-	skylien.acteurs[0] = listeFilms[1]->acteurs[0];
-	skylien.acteurs[0]->nom = "Daniel Wroughton Craig";
-	cout << ligneDeSeparation
-		<< "Les films copiés/modifiés, sont:\n"
-		<< skylien << *listeFilms[0] << *listeFilms[1] << ligneDeSeparation;
-	assert(skylien.acteurs[0]->nom == listeFilms[1]->acteurs[0]->nom);
-	assert(skylien.acteurs[0]->nom != listeFilms[0]->acteurs[0]->nom);
-
-	// Tests chapitre 10:
-	auto film955 = listeFilms.trouver([](const auto& f) { return f.recette == 955; });
-	cout << "\nFilm de 955M$:\n" << *film955;
-	assert(film955->titre == "Le Hobbit : La Bataille des Cinq Armées");
-	assert(listeFilms.trouver([](const auto&) { return false; }) == nullptr); // Pour la couveture de code: chercher avec un critère toujours faux ne devrait pas trouver.
-
-	// Tests chapitre 9:
-	Liste<string> listeTextes(2);
-	listeTextes.ajouter(make_shared<string>("Bonjour"));
-	listeTextes.ajouter(make_shared<string>("Allo"));
-	Liste<string> listeTextes2 = listeTextes;
-	listeTextes2[0] = make_shared<string>("Hi");
-	*listeTextes2[1] = "Allo!";
-	assert(*listeTextes[0] == "Bonjour");
-	assert(*listeTextes[1] == *listeTextes2[1]);
-	assert(*listeTextes2[0] == "Hi");
-	assert(*listeTextes2[1] == "Allo!");
-	listeTextes = move(listeTextes2);  // Pas demandé, mais comme j'ai fait la méthode on va la tester; noter que la couverture de code dans VisualStudio ne montre pas la couverture des constructeurs/opérateurs= =default.
-	assert(*listeTextes[0] == "Hi" && *listeTextes[1] == "Allo!");
-
-	// Détruit et enlève le premier film de la liste (Alien).
-	delete listeFilms[0];
-	listeFilms.enleverFilm(listeFilms[0]);
-
-	cout << ligneDeSeparation << "Les films sont maintenant:" << endl;
-	cout << listeFilms;
-
-	// Pour une couverture avec 0% de lignes non exécutées:
-	listeFilms.enleverFilm(nullptr); // Enlever un film qui n'est pas dans la liste (clairement que nullptr n'y est pas).
-	assert(listeFilms.size() == 6);
 
 	// Détruire tout avant de terminer le programme.
 	listeFilms.detruire(true);

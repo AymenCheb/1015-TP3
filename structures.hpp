@@ -74,23 +74,30 @@ private:
 };
 using ListeActeurs = Liste<Acteur>;
 
-class Item {
+class Affichable {
+public:
+	virtual void afficher() const = 0;
+	~Affichable() = default;
+};
+class Item : public Affichable {
 public:
 	string titre;
 	int anneeSortie = 0;
-
+	void afficher() const override;
 };
 class Livre : public Item {
 public:
 	string Auteur;
 	int MillionsDeCopiesVendues = 0;
 	int nombreDePages=0;
+	void afficher() const override;
 };	
 struct Film : public Item
 {
 	string realisateur; // Titre et nom du réalisateur (on suppose qu'il n'y a qu'un réalisateur).
 	int recette=0; // Année de sortie et recette globale du film en millions de dollars
 	ListeActeurs acteurs;
+	void afficher() const override;
 };
 
 struct Acteur
