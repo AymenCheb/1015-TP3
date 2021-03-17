@@ -146,33 +146,43 @@ Film* lireFilm(istream& fichier, ListeFilms& listeFilms)
 
 	return film;
 }
-Livre* lireLivre(string nomFichier) {
-	ifstream fichierLivre(nomFichier);
-	Livre* livre = new Livre;
-	
-	string tempString;
-	string infosLivres[5];
-	for (int i = 0; i < 5; i++)
-	{
-		fichierLivre >> quoted(tempString);
-		infosLivres[i] = tempString;
-	}
-	livre->titre = infosLivres[0];
-	livre->anneeSortie = stoi(infosLivres[1]);
-	livre->Auteur = infosLivres[2];
-	livre->MillionsDeCopiesVendues = stoi(infosLivres[3]);
-	livre->nombreDePages = stoi(infosLivres[4]);
-	return livre;
-}
+//Livre* lireLivre(string nomFichier) {
+//	ifstream fichierLivre(nomFichier);
+//	Livre* livre = new Livre;
+//	
+//	string tempString;
+//	string infosLivres[5];
+//	for (int i = 0; i < 5; i++)
+//	{
+//		fichierLivre >> quoted(tempString);
+//		infosLivres[i] = tempString;
+//	}
+//	livre->titre = infosLivres[0];
+//	livre->anneeSortie = stoi(infosLivres[1]);
+//	livre->Auteur = infosLivres[2];
+//	livre->MillionsDeCopiesVendues = stoi(infosLivres[3]);
+//	livre->nombreDePages = stoi(infosLivres[4]);
+//	return livre;
+//}
 void ajouterLivre(vector<Item*> bibliotheque, string nomFichier){
 	ifstream fichierLivre(nomFichier);
 	string ligne;
+	string tempString;
+	string infosLivres[5];
 	while (getline(fichierLivre, ligne))
 	{
-		if (ligne != "\n")
+		Livre* livre = new Livre;
+		for (int i = 0; i < 5; i++)
 		{
-			bibliotheque.push_back(lireLivre(nomFichier));
+			fichierLivre >> quoted(tempString);
+			infosLivres[i] = tempString;
 		}
+		livre->titre = infosLivres[0];
+		livre->anneeSortie = stoi(infosLivres[1]);
+		livre->Auteur = infosLivres[2];
+		livre->MillionsDeCopiesVendues = stoi(infosLivres[3]);
+		livre->nombreDePages = stoi(infosLivres[4]);
+		bibliotheque.push_back(livre);
 	}
 }
 ListeFilms creerListe(string nomFichier)
@@ -255,7 +265,6 @@ int main()
 	cout << ligneDeSeparation << "Le premier film de la liste est:" << endl;
 	// Le premier film de la liste.  Devrait être Alien.
 	cout << *listeFilms[0];
-	contenuBibliotheque.push_back(lireLivre("livres.txt"));
 	// Tests chapitre 7:
 	ostringstream tamponStringStream;
 	tamponStringStream << *listeFilms[0];
