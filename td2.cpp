@@ -164,26 +164,33 @@ Film* lireFilm(istream& fichier, ListeFilms& listeFilms)
 //	livre->nombreDePages = stoi(infosLivres[4]);
 //	return livre;
 //}
-void ajouterLivre(vector<Item*> bibliotheque, string nomFichier){
+void ajouterLivre(vector<Item*> &bibliotheque, string nomFichier){
 	ifstream fichierLivre(nomFichier);
 	string ligne;
-	string tempString;
+	string tempString = "";
+	string oldString = " ";
 	string infosLivres[5];
-	while (getline(fichierLivre, ligne))
+	while (true)
 	{
-		Livre* livre = new Livre;
+		 shared_ptr<Livre> livre = make_shared<Livre>();
 		for (int i = 0; i < 5; i++)
 		{
+			oldString = tempString;
 			fichierLivre >> quoted(tempString);
 			infosLivres[i] = tempString;
+		}
+		if (oldString == tempString)
+		{
+			break;
 		}
 		livre->titre = infosLivres[0];
 		livre->anneeSortie = stoi(infosLivres[1]);
 		livre->Auteur = infosLivres[2];
 		livre->MillionsDeCopiesVendues = stoi(infosLivres[3]);
 		livre->nombreDePages = stoi(infosLivres[4]);
-		bibliotheque.push_back(livre);
+		bibliotheque.push_back(livre.get());
 	}
+	
 }
 ListeFilms creerListe(string nomFichier)
 {
