@@ -146,7 +146,7 @@ Film* lireFilm(istream& fichier, ListeFilms& listeFilms)
 	return film;
 }
 
-void ajouterLivres(vector<Item*> &bibliotheque, string nomFichier){
+void ajouterLivres(vector<shared_ptr<Item>> &bibliotheque, string nomFichier){
 	ifstream fichierLivre(nomFichier);
 	string ligne;
 	string tempString;
@@ -154,8 +154,7 @@ void ajouterLivres(vector<Item*> &bibliotheque, string nomFichier){
 	string infosLivres[5];
 	while (true)
 	{
-		 /*shared_ptr<Livre> livre = make_shared<Livre>();*/
-		Livre* livre = new Livre;
+		 shared_ptr<Livre> livre = make_shared<Livre>();
 		for (int i = 0; i < 5; i++)
 		{
 			oldString = tempString;
@@ -244,7 +243,7 @@ void Film::afficher() const {
 	for (const shared_ptr<Acteur>& acteur : this->acteurs.enSpan())
 		cout << *acteur;
 }
-void afficherListeItems(vector<Item*> bibilotheque) {
+void afficherListeItems(vector<shared_ptr<Item>> bibilotheque) {
 	static const string ligneDeSeparation = //[
 		"\033[32m────────────────────────────────────────\033[0m\n";
 	cout << ligneDeSeparation;
@@ -265,10 +264,11 @@ int main()
 
 	ListeFilms listeFilms = creerListe("films.bin");
 	// Création bibliothèque 
-	vector<Item*> contenuBibliotheque;
+	vector<shared_ptr<Item>> contenuBibliotheque;
 	for (int i = 0; i < listeFilms.size(); i++)
 	{
-		contenuBibliotheque.push_back(listeFilms.retournerFilm(i));
+		Film film = *listeFilms.retournerFilm(i);
+		contenuBibliotheque.push_back(make_shared<Film>(film));
 	}
 	ajouterLivres(contenuBibliotheque, "livres.txt");
 	afficherListeItems(contenuBibliotheque);
