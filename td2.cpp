@@ -10,6 +10,7 @@
 #include "verification_allocation.hpp" // Nos fonctions pour le rapport de fuites de mémoire.
 
 #include <iostream>
+#include <iomanip>
 #include <fstream>
 #include <string>
 #include <limits>
@@ -145,7 +146,35 @@ Film* lireFilm(istream& fichier, ListeFilms& listeFilms)
 
 	return film;
 }
-
+Livre* lireLivre(string nomFichier) {
+	ifstream fichierLivre(nomFichier);
+	Livre* livre = new Livre;
+	
+	string tempString;
+	string infosLivres[5];
+	for (int i = 0; i < 5; i++)
+	{
+		fichierLivre >> quoted(tempString);
+		infosLivres[i] = tempString;
+	}
+	livre->titre = infosLivres[0];
+	livre->anneeSortie = stoi(infosLivres[1]);
+	livre->Auteur = infosLivres[2];
+	livre->MillionsDeCopiesVendues = stoi(infosLivres[3]);
+	livre->nombreDePages = stoi(infosLivres[4]);
+	return livre;
+}
+void ajouterLivre(vector<Item*> bibliotheque, string nomFichier){
+	ifstream fichierLivre(nomFichier);
+	string ligne;
+	while (getline(fichierLivre, ligne))
+	{
+		if (ligne != "\n")
+		{
+			bibliotheque.push_back(lireLivre(nomFichier));
+		}
+	}
+}
 ListeFilms creerListe(string nomFichier)
 {
 	ifstream fichier(nomFichier, ios::binary);
@@ -217,15 +246,16 @@ int main()
 
 	ListeFilms listeFilms = creerListe("films.bin");
 	// Création bibliothèque 
-	vector<Item> contenuBibliotheque;
+	vector<Item*> contenuBibliotheque;
 	for (int i = 0; i < listeFilms.size(); i++)
 	{
-		contenuBibliotheque.push_back(*listeFilms.retournerFilm(i));
+		contenuBibliotheque.push_back(listeFilms.retournerFilm(i));
 	}
+	ajouterLivre(contenuBibliotheque, "livres.txt");
 	cout << ligneDeSeparation << "Le premier film de la liste est:" << endl;
 	// Le premier film de la liste.  Devrait être Alien.
 	cout << *listeFilms[0];
-
+	contenuBibliotheque.push_back(lireLivre("livres.txt"));
 	// Tests chapitre 7:
 	ostringstream tamponStringStream;
 	tamponStringStream << *listeFilms[0];

@@ -81,6 +81,7 @@ public:
 
 };
 class Livre : public Item {
+public:
 	string Auteur;
 	int MillionsDeCopiesVendues = 0;
 	int nombreDePages=0;
