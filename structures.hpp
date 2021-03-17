@@ -23,6 +23,7 @@ public:
 	int size() const { return nElements; }
 	void detruire(bool possedeLesFilms = false);
 	Film*& operator[] (int index) { return elements[index]; }
+	Film* retournerFilm(int index) { return elements[index]; };
 	Film* trouver(const function<bool(const Film&)>& critere) {
 		for (auto& film : enSpan())
 			if (critere(*film))
@@ -73,10 +74,21 @@ private:
 };
 using ListeActeurs = Liste<Acteur>;
 
-struct Film
+class Item {
+public:
+	string titre;
+	int anneeSortie = 0;
+
+};
+class Livre : public Item {
+	string Auteur;
+	int MillionsDeCopiesVendues = 0;
+	int nombreDePages=0;
+};	
+struct Film : public Item
 {
-	string titre, realisateur; // Titre et nom du réalisateur (on suppose qu'il n'y a qu'un réalisateur).
-	int anneeSortie=0, recette=0; // Année de sortie et recette globale du film en millions de dollars
+	string realisateur; // Titre et nom du réalisateur (on suppose qu'il n'y a qu'un réalisateur).
+	int recette=0; // Année de sortie et recette globale du film en millions de dollars
 	ListeActeurs acteurs;
 };
 

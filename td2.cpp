@@ -216,7 +216,12 @@ int main()
 	static const string ligneDeSeparation = "\n\033[35m════════════════════════════════════════\033[0m\n";
 
 	ListeFilms listeFilms = creerListe("films.bin");
-	
+	// Création bibliothèque 
+	vector<Item> contenuBibliotheque;
+	for (int i = 0; i < listeFilms.size(); i++)
+	{
+		contenuBibliotheque.push_back(*listeFilms.retournerFilm(i));
+	}
 	cout << ligneDeSeparation << "Le premier film de la liste est:" << endl;
 	// Le premier film de la liste.  Devrait être Alien.
 	cout << *listeFilms[0];
