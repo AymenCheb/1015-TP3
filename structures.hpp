@@ -1,5 +1,13 @@
 ﻿// Solutionnaire du TD3 INF1015 hiver 2021
 // Par Francois-R.Boyer@PolyMtl.ca
+
+/**
+* Ce fichier contient les structures utilisées dans le programme
+* \file   structures.hpp
+* \author Chebbi Mohamed Aymen et Hady Jaafar
+* \date   18 mars 2021
+* Créé le 10 mars 2021
+*/
 #pragma once
 // Structures mémoires pour une collection de films.
 

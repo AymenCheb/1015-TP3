@@ -1,6 +1,15 @@
-﻿// Solutionnaire du TD3 INF1015 hiver 2021
+﻿// Nous avons choisit de partir depuis le solutionnaire du TD3
+// Solutionnaire du TD3 INF1015 hiver 2021
 // Par Francois-R.Boyer@PolyMtl.ca
 
+
+/**
+* Ce programme copie une Liste de Films dans un vecteur d'items, y ajoute des livres et les affiches
+* \file   td4.cpp
+* \author Chebbi Mohamed Aymen et Hady Jaafar
+* \date   18 mars 2021
+* Créé le 10 mars 2021
+*/
 #pragma region "Includes"//{
 #define _CRT_SECURE_NO_WARNINGS // On permet d'utiliser les fonctions de copies de chaînes qui sont considérées non sécuritaires.
 #include "structures.hpp"      // Structures de données pour la collection de films en mémoire.
@@ -81,17 +90,17 @@ void ListeFilms::ajouterFilm(Film* film)
 // On a juste fait une version const qui retourne un span non const.  C'est valide puisque c'est la struct qui est const et non ce qu'elle pointe.  Ça ne va peut-être pas bien dans l'idée qu'on ne devrait pas pouvoir modifier une liste const, mais il y aurais alors plusieurs fonctions à écrire en version const et non-const pour que ça fonctionne bien, et ce n'est pas le but du TD (il n'a pas encore vraiment de manière propre en C++ de définir les deux d'un coup).
 span<Film*> ListeFilms::enSpan() const { return span(elements, nElements); }
 
-void ListeFilms::enleverFilm(const Film* film)
-{
-	for (Film*& element : enSpan()) {  // Doit être une référence au pointeur pour pouvoir le modifier.
-		if (element == film) {
-			if (nElements > 1)
-				element = elements[nElements - 1];
-			nElements--;
-			return;
-		}
-	}
-}
+//void ListeFilms::enleverFilm(const Film* film)
+//{
+//	for (Film*& element : enSpan()) {  // Doit être une référence au pointeur pour pouvoir le modifier.
+//		if (element == film) {
+//			if (nElements > 1)
+//				element = elements[nElements - 1];
+//			nElements--;
+//			return;
+//		}
+//	}
+//}
 //]
 
 // Fonction pour trouver un Acteur par son nom dans une ListeFilms, qui retourne un pointeur vers l'acteur, ou nullptr si l'acteur n'est pas trouvé.  Devrait utiliser span.
@@ -215,21 +224,22 @@ ostream& operator<< (ostream& os, const Item& item) {
 
 
 // Pas demandé dans l'énoncé de tout mettre les affichages avec surcharge, mais pourquoi pas.
-ostream& operator<< (ostream& os, const ListeFilms& listeFilms)
-{
-	static const string ligneDeSeparation = //[
-		"\033[32m────────────────────────────────────────\033[0m\n";
-	os << ligneDeSeparation;
-	for (const Film* film : listeFilms.enSpan()) {
-		os << *film << ligneDeSeparation;
-	}
-	return os;
-}
+//ostream& operator<< (ostream& os, const ListeFilms& listeFilms)
+//{
+//	static const string ligneDeSeparation = //[
+//		"\033[32m────────────────────────────────────────\033[0m\n";
+//	os << ligneDeSeparation;
+//	for (const Film* film : listeFilms.enSpan()) {
+//		os << *film << ligneDeSeparation;
+//	}
+//	return os;
+//}
+
 // Constructeur de FilmLivre par copie
-FilmLivre::FilmLivre(const Film& film, const Livre& livre): Livre(livre), Film(film) {
-	this->titre = film.titre;
-	this->anneeSortie = film.anneeSortie;
-}
+//FilmLivre::FilmLivre(const Film& film, const Livre& livre): Livre(livre), Film(film) {
+//	this->titre = film.titre;
+//	this->anneeSortie = film.anneeSortie;
+//}
 
 // Constucteur par défaut de la classe Livre
 Livre::Livre() {
@@ -316,6 +326,7 @@ int main()
 	// Afficher le contenu de la bibliothèque
 	afficherListeItems(contenuBibliotheque);
 
+	// Appels de fonctions pour code coverage:Nous avons simplement commenté les fonctions non appelées
 	// Détruire tout avant de terminer le programme.
 	listeFilms.detruire(true);
 }
