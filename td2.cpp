@@ -7,8 +7,8 @@
 * Ce programme copie une Liste de Films dans un vecteur d'items, y ajoute des livres et les affiches
 * \file   td4.cpp
 * \author Chebbi Mohamed Aymen et Hady Jaafar
-* \date   18 mars 2021
-* Créé le 10 mars 2021
+* \date   24 mars 2021
+* Créé le 24 mars 2021
 */
 #pragma region "Includes"//{
 #define _CRT_SECURE_NO_WARNINGS // On permet d'utiliser les fonctions de copies de chaînes qui sont considérées non sécuritaires.
