@@ -1,10 +1,15 @@
 ﻿// Solutionnaire du TD4 INF1015 hiver 2021
 // Par Francois-R.Boyer@PolyMtl.ca
 
+/*
+Ce programme a pour vocation de 
+file: td5.cpp
+AUthors: Mohamed Aymen Chebbi, Hady Jaafar
+Date: 24 mars 2021*/
 #pragma region "Includes"//{
 #define _CRT_SECURE_NO_WARNINGS // On permet d'utiliser les fonctions de copies de chaînes qui sont considérées non sécuritaires.
 
-#include "structures_solutionnaire_td4.hpp"      // Structures de données pour la collection de films en mémoire.
+#include "structures.hpp"      // Structures de données pour la collection de films en mémoire.
 
 #include <iostream>
 #include <iomanip>
