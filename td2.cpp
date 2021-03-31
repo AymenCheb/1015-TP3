@@ -337,6 +337,8 @@ int main(int argc, char* argv[])
 	static const string ligneDeSeparation = "\n\033[35m════════════════════════════════════════\033[0m\n";
 	vector<unique_ptr<Item>> items;
 	forward_list<unique_ptr<Item>> forwardListeItems;
+	forward_list<unique_ptr<Item>> listeInverse;
+	forward_list<unique_ptr<Item>> forwardListeItems2;
 	{
 		ListeFilms listeFilms = creerListe("films.bin");
 		for (auto&& film : listeFilms.enSpan())
@@ -352,11 +354,20 @@ int main(int argc, char* argv[])
 	}
 	
 	items.push_back(make_unique<FilmLivre>(dynamic_cast<Film&>(*items[4]), dynamic_cast<Livre&>(*items[9])));  // On ne demandait pas de faire une recherche; serait direct avec la matière du TD5.
-
+	// 1.1
 	for (int i = items.size() - 1;  i >= 0; i--)
 	{
 		Item itemCourant = *items[i].get();
 		forwardListeItems.push_front(make_unique<Item>(itemCourant));
 	}
-	afficherListeItems(forwardListeItems);
+	// 1.2
+	auto debut = forwardListeItems.begin();
+	auto fin = forwardListeItems.end();
+	for (auto it = debut; it != fin; ++it)
+	{
+		Item itemCourant = *(*it).get();
+		listeInverse.push_front(make_unique<Item>(itemCourant));
+	}
+	// 1.3
+	afficherListeItems(listeInverse);
 }
