@@ -277,12 +277,14 @@ Livre::Livre(istream& is) {
 	lireDe(is);
 }
 
-void afficherListeItems(span<unique_ptr<Item>> listeItems)
+template <typename conteneur>
+void afficherListeItems(const conteneur& listeItems)
 {
 	static const string ligneDeSeparation = "\033[32m────────────────────────────────────────\033[0m\n";
 	cout << ligneDeSeparation;
 	for (auto&& item : listeItems) {
-		cout << *item << ligneDeSeparation;
+		Item itemCourant = *item;
+		cout << itemCourant.titre << ligneDeSeparation << endl;
 	}
 }
 
