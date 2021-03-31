@@ -369,5 +369,15 @@ int main(int argc, char* argv[])
 		listeInverse.push_front(make_unique<Item>(itemCourant));
 	}
 	// 1.3
+
+	forwardListeItems2.push_front(make_unique<Item>(*(*debut).get()));
+	auto previousIt = forwardListeItems2.begin();
+	for (auto it = ++debut; it != fin; ++it)
+	{
+		Item itemCourant = *(*it).get();
+		forwardListeItems2.emplace_after( previousIt, make_unique<Item>(itemCourant));
+		++previousIt;
+	}
 	afficherListeItems(listeInverse);
+	afficherListeItems(forwardListeItems2);
 }
