@@ -18,6 +18,7 @@ Date: 24 mars 2021*/
 #include <limits>
 #include <algorithm>
 #include <sstream>
+#include <forward_list>
 #include "cppitertools/range.hpp"
 #include "cppitertools/enumerate.hpp"
 #include "gsl/span"
@@ -334,9 +335,8 @@ int main(int argc, char* argv[])
 	//int* fuite = new int; //TODO: Enlever cette ligne après avoir vérifié qu'il y a bien un "Detected memory leak" de "4 bytes" affiché dans la "Sortie", qui réfère à cette ligne du programme.
 
 	static const string ligneDeSeparation = "\n\033[35m════════════════════════════════════════\033[0m\n";
-
 	vector<unique_ptr<Item>> items;
-	
+	forward_list<unique_ptr<Item>> forwardListeItems;
 	{
 		ListeFilms listeFilms = creerListe("films.bin");
 		for (auto&& film : listeFilms.enSpan())
@@ -353,5 +353,10 @@ int main(int argc, char* argv[])
 	
 	items.push_back(make_unique<FilmLivre>(dynamic_cast<Film&>(*items[4]), dynamic_cast<Livre&>(*items[9])));  // On ne demandait pas de faire une recherche; serait direct avec la matière du TD5.
 
-	afficherListeItems(items);
+	for (int i = items.size() - 1;  i >= 0; i--)
+	{
+		Item itemCourant = *items[i].get();
+		forwardListeItems.push_front(make_unique<Item>(itemCourant));
+	}
+	afficherListeItems(forwardListeItems);
 }
