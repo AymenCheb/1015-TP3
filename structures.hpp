@@ -93,8 +93,8 @@ public:
 	Liste(Liste<T>&&) = default;  // Pas nécessaire, mais puisque c'est si simpler avec unique_ptr...
 	Liste<T>& operator=(Liste<T>&&) = default;  // Nécessaire dans mon cas pour l'initialisation dans lireFilm.
 
-	Iterator<T> begin();
-	Iterator<T> end();
+	shared_ptr<T>* begin();
+	shared_ptr<T>* end();
 	void ajouter(shared_ptr<T> element)
 	{
 		assert(nElements < capacite);  // Comme dans le TD1, on ne demande pas la réallocation pour ListeActeurs...

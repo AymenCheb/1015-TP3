@@ -298,20 +298,12 @@ Iterator<T>::Iterator(Node<T>* position) {
 	position_ = position;
 }
 template <typename T>
-Iterator<T> Liste<T>::begin() {
-	Node<T> noeudDebut(elements[0]);
-	shared_ptr<Node<T>> pointeurDebut(&noeudDebut);
-	first_ = pointeurDebut.get();
-	Iterator<T> debut(first_);
-	return debut;
+shared_ptr<T>* Liste<T>::begin() {
+	return elements.get();
 }
 template <typename T>
-Iterator<T> Liste<T>::end() {
-	Node<T> noeudFin(elements[this->nElements - 1]);
-	shared_ptr<Node<T>> pointeurFin(&noeudFin);
-	last_ = pointeurFin.get();
-	Iterator<T> fin(last_);
-	return fin;
+shared_ptr<T>* Liste<T>::end() {
+	return &begin()[nElements];
 }
 
 #pragma region "Exemples de tests unitaires"//{
@@ -412,7 +404,7 @@ int main(int argc, char* argv[])
 	// 1.5 
 	Film film = dynamic_cast<Film&>(*items[0]);
 	for (auto&& acteur : film.acteurs) {
-		cout << (acteur.get())->nom;
+		cout << (acteur.get())->nom << endl;
 	}/*
 	afficherListeItems(listeInverse);
 	afficherListeItems(items2);*/
