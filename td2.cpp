@@ -19,6 +19,7 @@ Date: 24 mars 2021*/
 #include <algorithm>
 #include <sstream>
 #include <forward_list>
+#include <set>
 #include "cppitertools/range.hpp"
 #include "cppitertools/enumerate.hpp"
 #include "gsl/span"
@@ -284,8 +285,8 @@ void afficherListeItems(const conteneur& listeItems)
 	static const string ligneDeSeparation = "\033[32m────────────────────────────────────────\033[0m\n";
 	cout << ligneDeSeparation;
 	for (auto&& item : listeItems) {
-		Item itemCourant = *item;
-		cout << itemCourant.titre << ligneDeSeparation << endl;
+		//Item itemCourant = *item;
+		cout << item << ligneDeSeparation << endl;
 	}
 }
 
@@ -405,7 +406,19 @@ int main(int argc, char* argv[])
 	Film film = dynamic_cast<Film&>(*items[0]);
 	for (auto&& acteur : film.acteurs) {
 		cout << (acteur.get())->nom << endl;
-	}/*
+	}
+	//1.6
+	
+	multiset<Item, less<>> itemsAlphabetiques;
+	for (auto&& item: items)
+	{
+		Item itemCourant = *(item.get());
+		itemsAlphabetiques.insert(itemCourant);
+	}
+
+	/*
 	afficherListeItems(listeInverse);
 	afficherListeItems(items2);*/
+	/*afficherListeItems(items);*/
+	afficherListeItems(itemsAlphabetiques);
 }

@@ -126,6 +126,8 @@ public:
 
 	string titre;
 	int anneeSortie = 0;
+	bool operator < (const Item& rhs) const { return titre < rhs.titre; };
+	bool operator > (const Item& rhs) const { return titre > rhs.titre; };
 };
 
 class Film : virtual public Item
@@ -163,4 +165,5 @@ struct Acteur
 {
 	string nom; int anneeNaissance=0; char sexe='\0';
 };
+
 
