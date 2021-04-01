@@ -6,6 +6,7 @@
 #include <memory>
 #include <functional>
 #include <cassert>
+#include <forward_list>
 #include "gsl/span"
 using gsl::span;
 using namespace std;  // On le permet, mais j'ai écrit mon .hpp sans, avant de le permettre dans l'énoncé.
@@ -38,6 +39,41 @@ private:
 };
 
 template <typename T>
+class Node {
+public:
+	Node(const shared_ptr<T>& pointeur);
+private:
+	Node* next_ = past_end;
+	Node* previous_ = past_end;
+	shared_ptr<T> pointeur_;
+
+	inline static constexpr Node* past_end = nullptr;
+	template <typename T>
+	friend class Liste;
+	template <typename T>
+	friend class Iterator;
+};
+template <typename T>
+class Iterator {
+public:
+	Iterator(Node<T>* position = Node<T>::past_end);
+	shared_ptr<T>& operator* () {
+		return position_->pointeur_;
+	};
+	Iterator& operator++ () {
+		position_ = position_->next_;
+		return *this;
+	};
+
+	bool operator== (const Iterator& b) const = default;
+private:
+	Node<T>* position_;
+	template <typename T>
+	friend class Liste;
+
+
+};
+template <typename T>
 class Liste {
 public:
 	Liste() = default;
@@ -57,6 +93,8 @@ public:
 	Liste(Liste<T>&&) = default;  // Pas nécessaire, mais puisque c'est si simpler avec unique_ptr...
 	Liste<T>& operator=(Liste<T>&&) = default;  // Nécessaire dans mon cas pour l'initialisation dans lireFilm.
 
+	Iterator<T> begin();
+	Iterator<T> end();
 	void ajouter(shared_ptr<T> element)
 	{
 		assert(nElements < capacite);  // Comme dans le TD1, on ne demande pas la réallocation pour ListeActeurs...
@@ -69,6 +107,8 @@ public:
 private:
 	int capacite = 0, nElements = 0;
 	unique_ptr<shared_ptr<T>[]> elements;
+	Node<T>* first_ = Node<T>::past_end;
+	Node<T>* last_ = Node<T>::past_end;
 };
 
 using ListeActeurs = Liste<Acteur>;
@@ -123,3 +163,4 @@ struct Acteur
 {
 	string nom; int anneeNaissance=0; char sexe='\0';
 };
+

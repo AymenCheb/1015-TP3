@@ -289,6 +289,31 @@ void afficherListeItems(const conteneur& listeItems)
 	}
 }
 
+template <typename T>
+Node<T>::Node(const shared_ptr<T>& pointeur) {
+	pointeur_ = pointeur;
+}
+template <typename T>
+Iterator<T>::Iterator(Node<T>* position) {
+	position_ = position;
+}
+template <typename T>
+Iterator<T> Liste<T>::begin() {
+	Node<T> noeudDebut(elements[0]);
+	shared_ptr<Node<T>> pointeurDebut(&noeudDebut);
+	first_ = pointeurDebut.get();
+	Iterator<T> debut(first_);
+	return debut;
+}
+template <typename T>
+Iterator<T> Liste<T>::end() {
+	Node<T> noeudFin(elements[this->nElements - 1]);
+	shared_ptr<Node<T>> pointeurFin(&noeudFin);
+	last_ = pointeurFin.get();
+	Iterator<T> fin(last_);
+	return fin;
+}
+
 #pragma region "Exemples de tests unitaires"//{
 #ifdef TEST
 // Pas demandés dans ce TD mais sert d'exemple.
@@ -370,6 +395,7 @@ int main(int argc, char* argv[])
 	// 1.3
 	forward_list<unique_ptr<Item>> forwardListeItems2;
 	forwardListeItems2.push_front(make_unique<Item>(*(*debut).get()));
+
 	auto previousIt = forwardListeItems2.begin();
 	for (auto it = ++debut; it != fin; ++it)
 	{
@@ -383,6 +409,11 @@ int main(int argc, char* argv[])
 		Item actuel = *i.get();
 		items2.push_back(make_unique<Item>(actuel));
 	}
+	// 1.5 
+	Film film = dynamic_cast<Film&>(*items[0]);
+	for (auto&& acteur : film.acteurs) {
+		cout << (acteur.get())->nom;
+	}/*
 	afficherListeItems(listeInverse);
-	afficherListeItems(items2);
+	afficherListeItems(items2);*/
 }
