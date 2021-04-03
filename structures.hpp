@@ -126,8 +126,6 @@ public:
 
 	string titre;
 	int anneeSortie = 0;
-	bool operator < (const Item& rhs) const { return titre < rhs.titre; };
-	bool operator > (const Item& rhs) const { return titre > rhs.titre; };
 };
 
 class Film : virtual public Item
@@ -149,7 +147,6 @@ public:
 	void afficherSur(ostream& os) const override;
 	void afficherSpecifiqueSur(ostream& os) const;
 	void lireDe(istream& is);
-
 	string auteur;
 	int copiesVendues=0, nPages=0;
 };
@@ -157,7 +154,6 @@ public:
 class FilmLivre : public Film, public Livre {
 public:
 	FilmLivre(const Film& film, const Livre& livre) : Item(film), Film(film), Livre(livre) { }
-
 	void afficherSur(ostream& os) const override;
 };
 

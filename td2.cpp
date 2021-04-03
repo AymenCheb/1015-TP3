@@ -20,6 +20,9 @@ Date: 24 mars 2021*/
 #include <sstream>
 #include <forward_list>
 #include <set>
+#include <map>
+#include <numeric>
+#include <iterator>
 #include "cppitertools/range.hpp"
 #include "cppitertools/enumerate.hpp"
 #include "gsl/span"
@@ -221,6 +224,11 @@ ostream& operator<< (ostream& os, const Item& item)
 	return os;
 }
 
+ostream& operator<< (ostream& os, const Item* ptrItem)
+{
+	ptrItem->afficherSur(os);
+	return os;
+}
 void Item::afficherSur(ostream& os) const
 {
 	os << "Titre: " << titre << "  Année:" << anneeSortie << endl;
@@ -370,55 +378,89 @@ int main(int argc, char* argv[])
 	
 	items.push_back(make_unique<FilmLivre>(dynamic_cast<Film&>(*items[4]), dynamic_cast<Livre&>(*items[9])));  // On ne demandait pas de faire une recherche; serait direct avec la matière du TD5.
 	// 1.1
-	forward_list<unique_ptr<Item>> forwardListeItems;
+	cout << "Affichage 1.1: ---------------------------------------------------" << endl;
+	forward_list<Item*> forwardListeItems;
 	for (int i = items.size() - 1;  i >= 0; i--)
 	{
-		Item itemCourant = *items[i].get();
-		forwardListeItems.push_front(make_unique<Item>(itemCourant));
+		Item* itemCourant = &*items[i].get();
+		forwardListeItems.push_front(itemCourant);
 	}
+	afficherListeItems(forwardListeItems);
 	// 1.2
-	forward_list<unique_ptr<Item>> listeInverse;
+	cout << "Affichage 1.2: ---------------------------------------------------" << endl;
+	forward_list<Item*> listeInverse;
 	auto debut = forwardListeItems.begin();
 	auto fin = forwardListeItems.end();
 	for (auto it = debut; it != fin; ++it)
 	{
-		Item itemCourant = *(*it).get();
-		listeInverse.push_front(make_unique<Item>(itemCourant));
+		listeInverse.push_front(*it);
 	}
+	afficherListeItems(listeInverse);
 	// 1.3
-	forward_list<unique_ptr<Item>> forwardListeItems2;
-	forwardListeItems2.push_front(make_unique<Item>(*(*debut).get()));
+	cout << "Affichage 1.3: ---------------------------------------------------" << endl;
+	forward_list<Item*> forwardListeItems2;
+	forwardListeItems2.push_front(*debut);
 
 	auto previousIt = forwardListeItems2.begin();
 	for (auto it = ++debut; it != fin; ++it)
 	{
-		Item itemCourant = *(*it).get();
-		forwardListeItems2.emplace_after( previousIt, make_unique<Item>(itemCourant));
+		forwardListeItems2.emplace_after( previousIt, *it);
 		++previousIt;
 	}
+	afficherListeItems(forwardListeItems2);
 	// 1.4 en O(n)
-	vector<unique_ptr<Item>> items2;
+	cout << "Affichage 1.4: ---------------------------------------------------" << endl;
+	vector<Item*> items2;
 	for (auto& i : forwardListeItems) {
-		Item actuel = *i.get();
-		items2.push_back(make_unique<Item>(actuel));
+		items2.push_back(i);
 	}
+	afficherListeItems(items2);
 	// 1.5 
+	cout << "Affichage 1.5: ---------------------------------------------------" << endl;
 	Film film = dynamic_cast<Film&>(*items[0]);
 	for (auto&& acteur : film.acteurs) {
 		cout << (acteur.get())->nom << endl;
 	}
-	//1.6
-	
-	multiset<Item, less<>> itemsAlphabetiques;
+	// 2.1
+	cout << "Affichage 2.1: ---------------------------------------------------" << endl;
+	/*multiset<Item, less<>> itemsAlphabetiques;
 	for (auto&& item: items)
 	{
 		Item itemCourant = *(item.get());
 		itemsAlphabetiques.insert(itemCourant);
+	}*/
+	multimap<string, Item&> ordreAlpha;
+	for (auto&& item : items) {
+		Item& actuel = *(item.get());
+		ordreAlpha.insert(pair <string, Item&>(actuel.titre, actuel));
+	}
+	multimap<string, Item&> ::iterator itr;
+	for (itr = ordreAlpha.begin(); itr != ordreAlpha.end(); ++itr)
+	{
+		cout << (itr->second) << endl;
 	}
 
-	/*
-	afficherListeItems(listeInverse);
-	afficherListeItems(items2);*/
-	/*afficherListeItems(items);*/
-	afficherListeItems(itemsAlphabetiques);
+	// 2.2 
+	cout << "Affichage 2.2: ---------------------------------------------------" << endl;
+	// Etape initiale : Creation du conteneur et insertion des Items
+	unordered_map<string, Item&> TrouverElem;
+	for (auto&& item : items) {
+		Item& actuel = *(item.get());
+		TrouverElem.insert(pair<string, Item&>(actuel.titre, actuel));
+	}
+	// Etape 2 : rechercher un item precis via son titre en O(1) * /
+		string itemAtrouver = "The Hobbit";
+	unordered_map<string, Item&>::const_iterator itemTrouver = TrouverElem.find(itemAtrouver);
+	cout << itemTrouver->second << endl;
+	// 3.1
+	cout << "Affichage 3.1: ---------------------------------------------------" << endl;
+	vector<Item*> vecteurFilms = {};
+	auto it = copy_if(make_move_iterator(forwardListeItems.begin()), make_move_iterator(forwardListeItems.end()), back_inserter(vecteurFilms), [](Item* ptrItem) {return dynamic_cast<Film*>(ptrItem); });
+	afficherListeItems(vecteurFilms);
+
+	//3.2 
+	cout << "Affichage 3.2: ---------------------------------------------------" << endl;
+	cout << "La somme des recettes est: " << endl; 
+	int somme = accumulate(vecteurFilms.begin(), vecteurFilms.end(), 0, [](int i, Item* film) {return (dynamic_cast<Film*>(film))->recette + i; });
+	cout << somme << "M$" << endl;
 }
