@@ -384,7 +384,7 @@ int main(int argc, char* argv[])
 		Item* itemCourant = &*items[i].get(); // Récupère le pointeur d'item
 		forwardListeItems.push_front(itemCourant); // L'ajoute au début de la liste; cela permet de retrouver l'ordre original 
 	}
-
+	cout << " --Contenu de la forwardListe avec l'ordre original-- " << endl;
 	afficherListeItems(forwardListeItems);
 	// Section 1.2
 	cout << "\n\033[35m═════════════════Affichage 1.2═══════════════════════\033[0m\n" << endl;
@@ -399,6 +399,7 @@ int main(int argc, char* argv[])
 	{
 		listeInverse.push_front(*it); // Ajoute le pointeur dans la liste inverse
 	}
+	cout << " --Contenu de la forwardListe avec l'ordre inverse-- " << endl;
 	afficherListeItems(listeInverse);
 	// Section 1.3
 	cout << "\n\033[35m═════════════════Affichage 1.3═══════════════════════\033[0m\n" << endl;
@@ -413,19 +414,22 @@ int main(int argc, char* argv[])
 		forwardListeItems2.emplace_after( previousIt, *it);
 		++previousIt;
 	}
+	cout << " --Contenu de la forwardListe avec l'ordre original copié depuis la première forwardList-- " << endl;
 	afficherListeItems(forwardListeItems2);
 	// Section 1.4 en O(n)
 	cout << "\n\033[35m═════════════════Affichage 1.4═══════════════════════\033[0m\n" << endl;
-	vector<Item*> items2;
+	vector<Item*> itemsInversee;
 	// Complexité linéaire en O(n) car on itère n élèments dans une liste en faisant des opérations en O(1)
 	for (auto& i : forwardListeItems) {
-		items2.push_back(i); // Les élèments dans forwardListeItems sont dans le bon ordre et on peut directement les push backs en partant du premier au dernier
+		itemsInversee.insert(itemsInversee.begin(), i); // Les élèments dans forwardListeItems sont dans l'orde original, on peut donc juste les insert au début de la liste
 	}
-	afficherListeItems(items2);
+	cout << " --Contenu du vecteur avec l'ordre inverse-- " << endl;
+	afficherListeItems(itemsInversee);
 	// Section 1.5 
 	cout << "\n\033[35m═════════════════Affichage 1.5═══════════════════════\033[0m\n" << endl;
 	Film film = dynamic_cast<Film&>(*items[0]);
-	for (auto&& acteur : film.acteurs) { // Iteratio pour afficher les acteurs du premier film(Alien)
+	cout << " --Contenu de la liste d'acteurs du film The Hobbit-- " << endl;
+	for (auto&& acteur : film.acteurs) { // Iteration pour afficher les acteurs du premier film(Alien)
 		cout << (acteur.get())->nom << endl;
 	}
 	// Section 2.1
@@ -436,6 +440,7 @@ int main(int argc, char* argv[])
 		ordreAlpha.insert(pair <string, Item&>(actuel.titre, actuel));
 	}
 	multimap<string, Item&> ::iterator itr; // Iteration dans la multimap pour afficher les items ( uniquement les titres)
+	cout << " --Contenu de la multiMap avec l'ordre alphabétique-- " << endl;
 	for (itr = ordreAlpha.begin(); itr != ordreAlpha.end(); ++itr)
 	{
 		cout << (itr->second).titre << endl;
@@ -452,17 +457,19 @@ int main(int argc, char* argv[])
 	// Etape 2 : rechercher un item precis via son titre en O(1) car la fonction find de unordered_map a une complexite moyenne de O(1) * /
 	string itemAtrouver = "The Hobbit";
 	unordered_map<string, Item&>::const_iterator itemTrouver = TrouverElem.find(itemAtrouver);
+	cout << " -- L'item trouvé est-- " << endl;
 	cout << itemTrouver->second << endl;
 	// 3.1
 	cout << "\n\033[35m═════════════════Affichage 3.1═══════════════════════\033[0m\n" << endl;
 	vector<Item*> vecteurFilms = {};
 	// Copy_if s'occupe de copier chaque item dont le type est bien Film dans le vecteur
 	auto it = copy_if(make_move_iterator(forwardListeItems.begin()), make_move_iterator(forwardListeItems.end()), back_inserter(vecteurFilms), [](Item* ptrItem) {return dynamic_cast<Film*>(ptrItem); });
+	cout << " --Contenu du vecteur des films-- " << endl;
 	afficherListeItems(vecteurFilms);
 
 	// Section 3.2 
 	cout << "\n\033[35m═════════════════Affichage 3.2═══════════════════════\033[0m\n" << endl;
-	cout << "La somme des recettes est: " << endl; 
+	cout << "--La somme des recettes est--" << endl; 
 	// L'accumulateur s'occupe de faire la somme des recettes dans le vecteur
 	int somme = accumulate(vecteurFilms.begin(), vecteurFilms.end(), 0, [](int i, Item* film) {return (dynamic_cast<Film*>(film))->recette + i; });
 	cout << somme << "M$" << endl;
