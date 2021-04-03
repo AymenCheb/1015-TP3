@@ -372,51 +372,63 @@ int main(int argc, char* argv[])
 	}
 	
 	items.push_back(make_unique<FilmLivre>(dynamic_cast<Film&>(*items[4]), dynamic_cast<Livre&>(*items[9])));  // On ne demandait pas de faire une recherche; serait direct avec la matière du TD5.
-	// 1.1
+
+	// Section 1.1
 	cout << "\n\033[35m═════════════════Affichage 1.1═══════════════════════\033[0m\n" << endl;
-	forward_list<Item*> forwardListeItems;
-	for (int i = items.size() - 1;  i >= 0; i--)
+	forward_list<Item*> forwardListeItems; // Création de la forwardListe
+
+	// Complexité linéaire en O(n) car on itère n élèments dans une liste en faisant des opérations en O(1)
+
+	for (int i = items.size() - 1;  i >= 0; i--) // Parcours le vecteur d'items dans l'orde inverse
 	{
-		Item* itemCourant = &*items[i].get();
-		forwardListeItems.push_front(itemCourant);
+		Item* itemCourant = &*items[i].get(); // Récupère le pointeur d'item
+		forwardListeItems.push_front(itemCourant); // L'ajoute au début de la liste; cela permet de retrouver l'ordre original 
 	}
+
 	afficherListeItems(forwardListeItems);
-	// 1.2
+	// Section 1.2
 	cout << "\n\033[35m═════════════════Affichage 1.2═══════════════════════\033[0m\n" << endl;
 	forward_list<Item*> listeInverse;
+
+	// Préparer les itérateurs pour itérer à travers forwardListeItems
 	auto debut = forwardListeItems.begin();
 	auto fin = forwardListeItems.end();
-	for (auto it = debut; it != fin; ++it)
+
+	// Complexité linéaire en O(n) car on itère n élèments dans une liste en faisant des opérations en O(1)
+	for (auto it = debut; it != fin; ++it) // Itère à travers la forwardliste du premier élèment au dernier
 	{
-		listeInverse.push_front(*it);
+		listeInverse.push_front(*it); // Ajoute le pointeur dans la liste inverse
 	}
 	afficherListeItems(listeInverse);
-	// 1.3
+	// Section 1.3
 	cout << "\n\033[35m═════════════════Affichage 1.3═══════════════════════\033[0m\n" << endl;
 	forward_list<Item*> forwardListeItems2;
 	forwardListeItems2.push_front(*debut);
 
-	auto previousIt = forwardListeItems2.begin();
+	auto previousIt = forwardListeItems2.begin(); // Prépare un itérateur précédent pour savoir où faire l'insertion 
+
+	// Complexité linéaire en O(n) car on itère n élèments dans une liste en faisant des opérations en O(1)
 	for (auto it = ++debut; it != fin; ++it)
 	{
 		forwardListeItems2.emplace_after( previousIt, *it);
 		++previousIt;
 	}
 	afficherListeItems(forwardListeItems2);
-	// 1.4 en O(n)
+	// Section 1.4 en O(n)
 	cout << "\n\033[35m═════════════════Affichage 1.4═══════════════════════\033[0m\n" << endl;
 	vector<Item*> items2;
+	// Complexité linéaire en O(n) car on itère n élèments dans une liste en faisant des opérations en O(1)
 	for (auto& i : forwardListeItems) {
-		items2.push_back(i);
+		items2.push_back(i); // Les élèments dans forwardListeItems sont dans le bon ordre et on peut directement les push backs en partant du premier au dernier
 	}
 	afficherListeItems(items2);
-	// 1.5 
+	// Section 1.5 
 	cout << "\n\033[35m═════════════════Affichage 1.5═══════════════════════\033[0m\n" << endl;
 	Film film = dynamic_cast<Film&>(*items[0]);
 	for (auto&& acteur : film.acteurs) {
 		cout << (acteur.get())->nom << endl;
 	}
-	// 2.1
+	// Section 2.1
 	cout << "\n\033[35m═════════════════Affichage 2.1═══════════════════════\033[0m\n" << endl;
 	multimap<string, Item&> ordreAlpha;
 	for (auto&& item : items) {
@@ -429,7 +441,7 @@ int main(int argc, char* argv[])
 		cout << (itr->second).titre << endl;
 	}
 
-	// 2.2 
+	// Section 2.2 
 	cout << "\n\033[35m═════════════════Affichage 2.2═══════════════════════\033[0m\n" << endl;
 	// Etape initiale : Creation du conteneur et insertion des Items
 	unordered_map<string, Item&> TrouverElem;
@@ -444,12 +456,20 @@ int main(int argc, char* argv[])
 	// 3.1
 	cout << "\n\033[35m═════════════════Affichage 3.1═══════════════════════\033[0m\n" << endl;
 	vector<Item*> vecteurFilms = {};
+	// Copy_if s'occupe de copier chaque item dont le type est bien Film dans le vecteur
 	auto it = copy_if(make_move_iterator(forwardListeItems.begin()), make_move_iterator(forwardListeItems.end()), back_inserter(vecteurFilms), [](Item* ptrItem) {return dynamic_cast<Film*>(ptrItem); });
 	afficherListeItems(vecteurFilms);
 
-	//3.2 
+	// Section 3.2 
 	cout << "\n\033[35m═════════════════Affichage 3.2═══════════════════════\033[0m\n" << endl;
 	cout << "La somme des recettes est: " << endl; 
+	// L'accumulateur s'occupe de faire la somme des recettes dans le vecteur
 	int somme = accumulate(vecteurFilms.begin(), vecteurFilms.end(), 0, [](int i, Item* film) {return (dynamic_cast<Film*>(film))->recette + i; });
 	cout << somme << "M$" << endl;
+
+	// Appels de fonctions pour la couverture: 
+	cout << "\n\033[35m═════════════════Appel de fonctions pour la couverture ═══════════════════════\033[0m\n" << endl;
+	cout << *items[0].get(); // Fait appel à la surcharge d'opérateur << pour un Film
+	cout << *items[10].get(); // Fait appel à la surcharge d'opérateur << pour un Livre
+	cout << *items[12].get(); // Fait appel à la surcharge d'opérateur << pour un FilmLivre
 }
