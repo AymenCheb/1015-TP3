@@ -293,8 +293,7 @@ void afficherListeItems(const conteneur& listeItems)
 	static const string ligneDeSeparation = "\033[32m────────────────────────────────────────\033[0m\n";
 	cout << ligneDeSeparation;
 	for (auto&& item : listeItems) {
-		//Item itemCourant = *item;
-		cout << item << ligneDeSeparation << endl;
+		cout << item->titre << ligneDeSeparation << endl;
 	}
 }
 
@@ -378,7 +377,7 @@ int main(int argc, char* argv[])
 	
 	items.push_back(make_unique<FilmLivre>(dynamic_cast<Film&>(*items[4]), dynamic_cast<Livre&>(*items[9])));  // On ne demandait pas de faire une recherche; serait direct avec la matière du TD5.
 	// 1.1
-	cout << "Affichage 1.1: ---------------------------------------------------" << endl;
+	cout << "--------------------------------------------------- Affichage 1.1: ---------------------------------------------------" << endl;
 	forward_list<Item*> forwardListeItems;
 	for (int i = items.size() - 1;  i >= 0; i--)
 	{
@@ -387,7 +386,7 @@ int main(int argc, char* argv[])
 	}
 	afficherListeItems(forwardListeItems);
 	// 1.2
-	cout << "Affichage 1.2: ---------------------------------------------------" << endl;
+	cout << "--------------------------------------------------- Affichage 1.2: ---------------------------------------------------" << endl;
 	forward_list<Item*> listeInverse;
 	auto debut = forwardListeItems.begin();
 	auto fin = forwardListeItems.end();
@@ -397,7 +396,7 @@ int main(int argc, char* argv[])
 	}
 	afficherListeItems(listeInverse);
 	// 1.3
-	cout << "Affichage 1.3: ---------------------------------------------------" << endl;
+	cout << "--------------------------------------------------- Affichage 1.3: ---------------------------------------------------" << endl;
 	forward_list<Item*> forwardListeItems2;
 	forwardListeItems2.push_front(*debut);
 
@@ -409,26 +408,20 @@ int main(int argc, char* argv[])
 	}
 	afficherListeItems(forwardListeItems2);
 	// 1.4 en O(n)
-	cout << "Affichage 1.4: ---------------------------------------------------" << endl;
+	cout << "--------------------------------------------------- Affichage 1.4: ---------------------------------------------------" << endl;
 	vector<Item*> items2;
 	for (auto& i : forwardListeItems) {
 		items2.push_back(i);
 	}
 	afficherListeItems(items2);
 	// 1.5 
-	cout << "Affichage 1.5: ---------------------------------------------------" << endl;
+	cout << "--------------------------------------------------- Affichage 1.5: ---------------------------------------------------" << endl;
 	Film film = dynamic_cast<Film&>(*items[0]);
 	for (auto&& acteur : film.acteurs) {
 		cout << (acteur.get())->nom << endl;
 	}
 	// 2.1
-	cout << "Affichage 2.1: ---------------------------------------------------" << endl;
-	/*multiset<Item, less<>> itemsAlphabetiques;
-	for (auto&& item: items)
-	{
-		Item itemCourant = *(item.get());
-		itemsAlphabetiques.insert(itemCourant);
-	}*/
+	cout << "--------------------------------------------------- Affichage 2.1: ---------------------------------------------------" << endl;
 	multimap<string, Item&> ordreAlpha;
 	for (auto&& item : items) {
 		Item& actuel = *(item.get());
@@ -437,11 +430,11 @@ int main(int argc, char* argv[])
 	multimap<string, Item&> ::iterator itr;
 	for (itr = ordreAlpha.begin(); itr != ordreAlpha.end(); ++itr)
 	{
-		cout << (itr->second) << endl;
+		cout << (itr->second).titre << endl;
 	}
 
 	// 2.2 
-	cout << "Affichage 2.2: ---------------------------------------------------" << endl;
+	cout << "--------------------------------------------------- Affichage 2.2: ---------------------------------------------------" << endl;
 	// Etape initiale : Creation du conteneur et insertion des Items
 	unordered_map<string, Item&> TrouverElem;
 	for (auto&& item : items) {
@@ -453,13 +446,13 @@ int main(int argc, char* argv[])
 	unordered_map<string, Item&>::const_iterator itemTrouver = TrouverElem.find(itemAtrouver);
 	cout << itemTrouver->second << endl;
 	// 3.1
-	cout << "Affichage 3.1: ---------------------------------------------------" << endl;
+	cout << "--------------------------------------------------- Affichage 3.1: ---------------------------------------------------" << endl;
 	vector<Item*> vecteurFilms = {};
 	auto it = copy_if(make_move_iterator(forwardListeItems.begin()), make_move_iterator(forwardListeItems.end()), back_inserter(vecteurFilms), [](Item* ptrItem) {return dynamic_cast<Film*>(ptrItem); });
 	afficherListeItems(vecteurFilms);
 
 	//3.2 
-	cout << "Affichage 3.2: ---------------------------------------------------" << endl;
+	cout << "--------------------------------------------------- Affichage 3.2: ---------------------------------------------------" << endl;
 	cout << "La somme des recettes est: " << endl; 
 	int somme = accumulate(vecteurFilms.begin(), vecteurFilms.end(), 0, [](int i, Item* film) {return (dynamic_cast<Film*>(film))->recette + i; });
 	cout << somme << "M$" << endl;
