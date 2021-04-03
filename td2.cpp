@@ -417,17 +417,17 @@ int main(int argc, char* argv[])
 	// 1.5 
 	cout << "\n\033[35m═════════════════Affichage 1.5═══════════════════════\033[0m\n" << endl;
 	Film film = dynamic_cast<Film&>(*items[0]);
-	for (auto&& acteur : film.acteurs) {
+	for (auto&& acteur : film.acteurs) { // Iteratio pour afficher les acteurs du premier film(Alien)
 		cout << (acteur.get())->nom << endl;
 	}
 	// 2.1
 	cout << "\n\033[35m═════════════════Affichage 2.1═══════════════════════\033[0m\n" << endl;
-	multimap<string, Item&> ordreAlpha;
-	for (auto&& item : items) {
+	multimap<string, Item&> ordreAlpha; // Utilisation d'une multi_map, la multimap classe les Item dans l'ordre alphabetique en fonction des key, dans notre cas les key sont les titres des films
+	for (auto&& item : items) {  // Insertion des iems ( key et value) dans la multimap
 		Item& actuel = *(item.get());
 		ordreAlpha.insert(pair <string, Item&>(actuel.titre, actuel));
 	}
-	multimap<string, Item&> ::iterator itr;
+	multimap<string, Item&> ::iterator itr; // Iteration dans la multimap pour afficher les items ( uniquement les titres)
 	for (itr = ordreAlpha.begin(); itr != ordreAlpha.end(); ++itr)
 	{
 		cout << (itr->second).titre << endl;
@@ -441,8 +441,8 @@ int main(int argc, char* argv[])
 		Item& actuel = *(item.get());
 		TrouverElem.insert(pair<string, Item&>(actuel.titre, actuel));
 	}
-	// Etape 2 : rechercher un item precis via son titre en O(1) * /
-		string itemAtrouver = "The Hobbit";
+	// Etape 2 : rechercher un item precis via son titre en O(1) car la fonction find de unordered_map a une complexite moyenne de O(1) * /
+	string itemAtrouver = "The Hobbit";
 	unordered_map<string, Item&>::const_iterator itemTrouver = TrouverElem.find(itemAtrouver);
 	cout << itemTrouver->second << endl;
 	// 3.1
