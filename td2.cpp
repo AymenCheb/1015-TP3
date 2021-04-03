@@ -224,11 +224,7 @@ ostream& operator<< (ostream& os, const Item& item)
 	return os;
 }
 
-ostream& operator<< (ostream& os, const Item* ptrItem)
-{
-	ptrItem->afficherSur(os);
-	return os;
-}
+
 void Item::afficherSur(ostream& os) const
 {
 	os << "Titre: " << titre << "  Année:" << anneeSortie << endl;
